@@ -17,9 +17,18 @@ namespace C2S {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & a, const int & b, const float & c, const MyClass & d, const Proud::CFastArray<int> & f, const Proud::CFastMap<int,float> & g, const Proud::ByteArray & block) PN_SEALED; 
-	virtual bool Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & a, const int & b, const float & c, const MyClass & d, const Proud::CFastArray<int> & f, const Proud::CFastMap<int,float> & g, const Proud::ByteArray & block)   PN_SEALED;  
+	virtual bool RequestLogon ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & userName) PN_SEALED; 
+	virtual bool RequestLogon ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & userName)   PN_SEALED;  
+	virtual bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & text) PN_SEALED; 
+	virtual bool Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & text)   PN_SEALED;  
+	virtual bool RequestP2PGroup ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::HostIDArray & groupMemberList) PN_SEALED; 
+	virtual bool RequestP2PGroup ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::HostIDArray & groupMemberList)   PN_SEALED;  
+	virtual bool RequestLeaveP2PGroup ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::HostID & groupID) PN_SEALED; 
+	virtual bool RequestLeaveP2PGroup ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::HostID & groupID)   PN_SEALED;  
+static const PNTCHAR* RmiName_RequestLogon;
 static const PNTCHAR* RmiName_Chat;
+static const PNTCHAR* RmiName_RequestP2PGroup;
+static const PNTCHAR* RmiName_RequestLeaveP2PGroup;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

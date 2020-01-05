@@ -61,9 +61,8 @@ namespace C2C {
 			            return true;
 			        }
 			
-					Proud::String a; __msg >> a;
-					int b; __msg >> b;
-					float c; __msg >> c;
+					Proud::HostID p2pGroupID; __msg >> p2pGroupID;
+					Proud::String text; __msg >> text;
 					m_core->PostCheckReadMessage(__msg,RmiName_P2PChat);
 					
 			
@@ -71,13 +70,10 @@ namespace C2C {
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,a);	
+						::Proud::AppendTextOut(parameterString,p2pGroupID);	
 										
 						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,b);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,c);	
+						::Proud::AppendTextOut(parameterString,text);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_P2PChat, 
 							RmiName_P2PChat,parameterString);
@@ -109,7 +105,7 @@ namespace C2C {
 					}
 						
 					// Call this method.
-					bool __ret = P2PChat (remote,ctx , a, b, c );
+					bool __ret = P2PChat (remote,ctx , p2pGroupID, text );
 						
 					if(__ret==false)
 					{
@@ -122,6 +118,174 @@ namespace C2C {
 						::Proud::AfterRmiSummary summary;
 						summary.m_rmiID = (::Proud::RmiID)Rmi_P2PChat;
 						summary.m_rmiName = RmiName_P2PChat;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
+			case Rmi_P2P_BigData:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::ByteArray data; __msg >> data;
+					Proud::HostID p2pGroupID; __msg >> p2pGroupID;
+					m_core->PostCheckReadMessage(__msg,RmiName_P2P_BigData);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,data);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,p2pGroupID);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_P2P_BigData, 
+							RmiName_P2P_BigData,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_P2P_BigData, 
+							RmiName_P2P_BigData, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_P2P_BigData, 
+							RmiName_P2P_BigData, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_P2P_BigData;
+						summary.m_rmiName = RmiName_P2P_BigData;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = P2P_BigData (remote,ctx , data, p2pGroupID );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_P2P_BigData);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_P2P_BigData;
+						summary.m_rmiName = RmiName_P2P_BigData;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
+			case Rmi_P2P_BigDataAck:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::HostID p2pGroupID; __msg >> p2pGroupID;
+					m_core->PostCheckReadMessage(__msg,RmiName_P2P_BigDataAck);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,p2pGroupID);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_P2P_BigDataAck, 
+							RmiName_P2P_BigDataAck,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_P2P_BigDataAck, 
+							RmiName_P2P_BigDataAck, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_P2P_BigDataAck, 
+							RmiName_P2P_BigDataAck, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_P2P_BigDataAck;
+						summary.m_rmiName = RmiName_P2P_BigDataAck;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = P2P_BigDataAck (remote,ctx , p2pGroupID );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_P2P_BigDataAck);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_P2P_BigDataAck;
+						summary.m_rmiName = RmiName_P2P_BigDataAck;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -147,6 +311,16 @@ __fail:
 	const PNTCHAR* Stub::RmiName_P2PChat =_PNT("P2PChat");
 	#else
 	const PNTCHAR* Stub::RmiName_P2PChat =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_P2P_BigData =_PNT("P2P_BigData");
+	#else
+	const PNTCHAR* Stub::RmiName_P2P_BigData =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_P2P_BigDataAck =_PNT("P2P_BigDataAck");
+	#else
+	const PNTCHAR* Stub::RmiName_P2P_BigDataAck =_PNT("");
 	#endif
 	const PNTCHAR* Stub::RmiName_First = RmiName_P2PChat;
 

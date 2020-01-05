@@ -61,9 +61,8 @@ namespace S2C {
 			            return true;
 			        }
 			
-					Proud::String a; __msg >> a;
-					int b; __msg >> b;
-					float c; __msg >> c;
+					Proud::String userName; __msg >> userName;
+					Proud::String text; __msg >> text;
 					m_core->PostCheckReadMessage(__msg,RmiName_ShowChat);
 					
 			
@@ -71,13 +70,10 @@ namespace S2C {
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,a);	
+						::Proud::AppendTextOut(parameterString,userName);	
 										
 						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,b);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,c);	
+						::Proud::AppendTextOut(parameterString,text);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_ShowChat, 
 							RmiName_ShowChat,parameterString);
@@ -109,7 +105,7 @@ namespace S2C {
 					}
 						
 					// Call this method.
-					bool __ret = ShowChat (remote,ctx , a, b, c );
+					bool __ret = ShowChat (remote,ctx , userName, text );
 						
 					if(__ret==false)
 					{
@@ -133,7 +129,7 @@ namespace S2C {
 					}
 				}
 				break;
-			case Rmi_SystemChat:
+			case Rmi_UserList_Add:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -151,29 +147,33 @@ namespace S2C {
 			            return true;
 			        }
 			
-					Proud::String txt; __msg >> txt;
-					m_core->PostCheckReadMessage(__msg,RmiName_SystemChat);
+					Proud::String userName; __msg >> userName;
+					Proud::HostID hostID; __msg >> hostID;
+					m_core->PostCheckReadMessage(__msg,RmiName_UserList_Add);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,txt);	
+						::Proud::AppendTextOut(parameterString,userName);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,hostID);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_SystemChat, 
-							RmiName_SystemChat,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_UserList_Add, 
+							RmiName_UserList_Add,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_SystemChat, 
-							RmiName_SystemChat, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_UserList_Add, 
+							RmiName_UserList_Add, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_SystemChat, 
-							RmiName_SystemChat, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_UserList_Add, 
+							RmiName_UserList_Add, _PNT(""));
 			#endif
 					}
 						
@@ -181,8 +181,8 @@ namespace S2C {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_SystemChat;
-						summary.m_rmiName = RmiName_SystemChat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_UserList_Add;
+						summary.m_rmiName = RmiName_UserList_Add;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -191,19 +191,101 @@ namespace S2C {
 					}
 						
 					// Call this method.
-					bool __ret = SystemChat (remote,ctx , txt );
+					bool __ret = UserList_Add (remote,ctx , userName, hostID );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_SystemChat);
+						m_core->ShowNotImplementedRmiWarning(RmiName_UserList_Add);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_SystemChat;
-						summary.m_rmiName = RmiName_SystemChat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_UserList_Add;
+						summary.m_rmiName = RmiName_UserList_Add;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
+			case Rmi_UserList_Remove:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::HostID hostID; __msg >> hostID;
+					m_core->PostCheckReadMessage(__msg,RmiName_UserList_Remove);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,hostID);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_UserList_Remove, 
+							RmiName_UserList_Remove,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_UserList_Remove, 
+							RmiName_UserList_Remove, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_UserList_Remove, 
+							RmiName_UserList_Remove, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_UserList_Remove;
+						summary.m_rmiName = RmiName_UserList_Remove;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = UserList_Remove (remote,ctx , hostID );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_UserList_Remove);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_UserList_Remove;
+						summary.m_rmiName = RmiName_UserList_Remove;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -231,9 +313,14 @@ __fail:
 	const PNTCHAR* Stub::RmiName_ShowChat =_PNT("");
 	#endif
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_SystemChat =_PNT("SystemChat");
+	const PNTCHAR* Stub::RmiName_UserList_Add =_PNT("UserList_Add");
 	#else
-	const PNTCHAR* Stub::RmiName_SystemChat =_PNT("");
+	const PNTCHAR* Stub::RmiName_UserList_Add =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_UserList_Remove =_PNT("UserList_Remove");
+	#else
+	const PNTCHAR* Stub::RmiName_UserList_Remove =_PNT("");
 	#endif
 	const PNTCHAR* Stub::RmiName_First = RmiName_ShowChat;
 

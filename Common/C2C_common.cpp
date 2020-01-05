@@ -10,9 +10,13 @@ namespace C2C {
 	::Proud::RmiID g_RmiIDList[] = {
                
 		Rmi_P2PChat,
+               
+		Rmi_P2P_BigData,
+               
+		Rmi_P2P_BigDataAck,
 	};
 
-	int g_RmiIDListCount = 1;
+	int g_RmiIDListCount = 3;
 
 }
 

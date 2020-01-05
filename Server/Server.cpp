@@ -1,105 +1,38 @@
-#include <iostream>
-#include <ProudNetServer.h>
-
-#include "../Common/Vars.h"
-#include "../Common/C2S_common.cpp"
-#include "../Common/S2C_common.cpp"
-#include "../Common/C2S_stub.h"
-#include "../Common/S2C_proxy.h"
-#include "../Common/C2S_stub.cpp"
-#include "../Common/S2C_proxy.cpp"
+#include "Server.h"
 
 using namespace std;
 using namespace Proud;
 
-class C2SStub : public C2S::Stub
-{
-public:
-	DECRMI_C2S_Chat;
-};
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id);
+HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id);
+HWND CreateTextEdit(int x, int y, int width, int height, HWND hWnd, int id);
+void Draw(HWND hWnd);
+
+HINSTANCE g_hInst;
+HWND hList;
+HWND hEdit;
+
+LPCTSTR lpszClass = TEXT("chat_server");
+
+int iWidth = 400;
+int iHeight = 600;
 
 C2SStub g_C2SStub;
 S2C::Proxy g_S2CProxy;
 HostID g_groupHostID = HostID_None;
 
-DEFRMI_C2S_Chat(C2SStub)
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
-	printf("[Server] chat message received : a=%s, b=%d, c=%f, d.a=%d, d.b=%.f, d.c=%lf", StringT2A(a).GetString(), b, c, d.a, d.b, d.c);
-	int i = 0;
-	int cnt = f.GetCount();
-	for (i = 0; i < cnt; ++i)
-		printf(", f[%d]=%d", i, f[i]);
-
-	for (CFastMap<int, float>::iterator it = g.begin(); it != g.end(); ++it)
-		printf(", pair(%d, %f)", it->GetFirst(), it->GetSecond());
-
-	printf("\n");
-
-	if (block.GetCount() != 100)
-		printf("Error : ByteArray length is not equal \n");
-
-	cnt = block.GetCount();
-	for (i = 0; i < cnt; ++i)
-	{
-		if (i != (int)block[i])
-			printf("ByteArray data is not equal. index:%d, data:%d\n", i, (int)block[i]);
-	}
-
-	// Echo chatting message which received from server to client.
-	g_S2CProxy.ShowChat(remote, RmiContext::ReliableSend, a, b + 1, c + 1);
-	return true;
-}
-
-int main()
-{
-#pragma region NetServer 클래스 선언하기
 	shared_ptr<CNetServer> srv(CNetServer::Create());
-#pragma endregion NetServer 클래스 선언하기
 
-#pragma region NetServerEvent를 받기위한 람다식 정의
-	srv->OnClientJoin = [](CNetClientInfo * clientInfo)
-	{
-		printf("Client %d connected.\n", clientInfo->m_HostID);
-	};
-
-	srv->OnClientLeave = [](CNetClientInfo * clientInfo, ErrorInfo * errorInfo, const ByteArray& comment)
-	{
-		printf("Client %d disconnected.\n", clientInfo->m_HostID);
-	};
-
-	srv->OnError = [](ErrorInfo * errorInfo)
-	{
-		printf("OnError : %s\n", StringT2A(errorInfo->ToString()).GetString());
-	};
-
-	srv->OnWarning = [](ErrorInfo * errorInfo)
-	{
-		printf("OnWarning : %s\n", StringT2A(errorInfo->ToString()).GetString());
-	};
-
-	srv->OnInformation = [](ErrorInfo * errorInfo)
-	{
-		printf("OnInformation : %s\n", StringT2A(errorInfo->ToString()).GetString());
-	};
-
-	srv->OnException = [](const Exception &e)
-	{
-		printf("OnException : %s\n", e.what());
-	};
-#pragma endregion NetServerEvent를 받기위한 람다식 정의
-
-#pragma region RmiStub, RmiProxy 클래스 NetServer에 Attach하기
+	srv->SetEventSink(&g_C2SStub);
 	srv->AttachStub(&g_C2SStub);
 	srv->AttachProxy(&g_S2CProxy);
-#pragma endregion RmiStub, RmiProxy 클래스 NetServer에 Attach하기
 
-#pragma region 서버 시작에 필요한 Parameter 설정하기
 	CStartServerParameter p1;
-	p1.m_protocolVersion = g_Version;
-	p1.m_tcpPorts.Add(g_ServerPort);
-#pragma endregion 서버 시작에 필요한 Parameter 설정하기
-
-#pragma region 서버를 시작하기
+	p1.m_protocolVersion = gProtocolVersion;
+	p1.m_tcpPorts.Add(gServerPort);
 	try
 	{
 		srv->Start(p1);
@@ -109,40 +42,143 @@ int main()
 		cout << "Server start failed: " << e.what() << endl;
 		return 0;
 	}
-#pragma endregion 서버를 시작하기
 
-	printf("Server started. Enterable commands:\n");
-	printf("1: Creates a P2P group where all clients join.\n");
-	printf("2. Sends a message to P2P group members.\n");
-	printf("q: Quit.\n");
+	HWND hWnd;
+	MSG Message;
+	WNDCLASS WndClass;
+	g_hInst = hInstance;
 
-	string userInput;
+	WndClass.cbClsExtra = 0;
+	WndClass.cbWndExtra = 0;
+	WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	WndClass.hInstance = hInstance;
+	WndClass.lpfnWndProc = WndProc;
+	WndClass.lpszClassName = lpszClass;
+	WndClass.lpszMenuName = NULL;
+	WndClass.style = CS_HREDRAW | CS_VREDRAW;
+	RegisterClass(&WndClass);
+	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, iWidth, iHeight, NULL, (HMENU)NULL, hInstance, NULL);
+	ShowWindow(hWnd, nCmdShow);
 
-	while (1)
+	while (GetMessage(&Message, NULL, 0, 0))
 	{
-		cin >> userInput;
-
-		if (userInput == "1")
-		{
-			HostID list[100];
-			int listCount = srv->GetClientHostIDs(list, 100);
-			g_groupHostID = srv->CreateP2PGroup(list, listCount, ByteArray());
-		}
-		else if (userInput == "2")
-		{
-			g_S2CProxy.SystemChat(g_groupHostID, RmiContext::ReliableSend, _PNT("Hello~~~!"));
-		}
-		else if (userInput == "3")
-		{
-			srv->DestroyP2PGroup(g_groupHostID);
-		}
-		else if (userInput == "q")
-		{
-			break;
-		}
-
-		Sleep(10);
+		TranslateMessage(&Message);
+		DispatchMessage(&Message);
 	}
 
-	return 0;
+	return (int)Message.wParam;
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
+{
+	switch (iMessage)
+	{
+	case WM_CREATE:
+		CreatePushButton(TEXT("닫기"), 10, iHeight - 85, 100, 25, hWnd, WINDOW_ID_EXITBTN);
+		CreatePushButton(TEXT("추방하기"), iWidth - 100 - 25, iHeight - 85, 100, 25, hWnd, WINDOW_ID_KICKBTN);
+		hList = CreateListBox(10, 30, iWidth - 35, iHeight - 390, hWnd, WINDOW_ID_USERLIST);
+		hEdit = CreateTextEdit(10, 270, iWidth - 35, iHeight - 390, hWnd, WINDOW_ID_USERLIST);
+		return 0;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case WINDOW_ID_EXITBTN:
+			DestroyWindow(hWnd);
+			break;
+		case WINDOW_ID_KICKBTN:
+			MessageBox(hWnd, TEXT("추방"), TEXT("추방하기 버튼"), MB_OK);
+			break;
+		case WINDOW_ID_USERLIST:
+			switch (HIWORD(wParam))
+			{
+			case LBN_SELCHANGE:
+				int i = SendMessage(hList, LB_GETCURSEL, 0, 0);
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+		return 0;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	case WM_PAINT:
+		Draw(hWnd);
+		return 0;
+	}
+	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
+}
+
+void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id)
+{
+	CreateWindow(TEXT("button"), text, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
+}
+
+HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id)
+{
+	return CreateWindow(TEXT("listbox"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | LBS_NOTIFY, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
+}
+
+HWND CreateTextEdit(int x, int y, int width, int height, HWND hWnd, int id)
+{
+	return CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
+}
+
+void Draw(HWND hWnd)
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hWnd, &ps);
+
+	TextOut(hdc, 10, 10, TEXT("접속자 목록"), 6);
+	TextOut(hdc, 10, 250, TEXT("메시지창"), 4);
+
+	EndPaint(hWnd, &ps);
+}
+
+DEFRMI_C2S_RequestLogon(C2SStub)
+{
+	return true;
+}
+
+DEFRMI_C2S_Chat(C2SStub)
+{
+	return true;
+}
+
+DEFRMI_C2S_RequestP2PGroup(C2SStub)
+{
+	return true;
+}
+
+DEFRMI_C2S_RequestLeaveP2PGroup(C2SStub)
+{
+	return true;
+}
+
+void C2SStub::OnClientJoin(CNetClientInfo *clientInfo)
+{
+
+}
+void C2SStub::OnClientLeave(CNetClientInfo *clientInfo, ErrorInfo *errorInfo, const ByteArray& comment)
+{
+
+}
+void C2SStub::OnError(ErrorInfo *errorInfo)
+{
+
+}
+void C2SStub::OnWarning(ErrorInfo *errorInfo)
+{
+
+}
+void C2SStub::OnInformation(ErrorInfo *errorInfo)
+{
+
+}
+void C2SStub::OnException(const Exception &e)
+{
+
 }

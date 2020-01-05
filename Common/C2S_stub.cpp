@@ -43,6 +43,88 @@ namespace C2S {
 					
 		switch((int)__rmiID) // case is to prevent from clang compile error
 		{
+			case Rmi_RequestLogon:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::String userName; __msg >> userName;
+					m_core->PostCheckReadMessage(__msg,RmiName_RequestLogon);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,userName);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_RequestLogon, 
+							RmiName_RequestLogon,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_RequestLogon, 
+							RmiName_RequestLogon, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_RequestLogon, 
+							RmiName_RequestLogon, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_RequestLogon;
+						summary.m_rmiName = RmiName_RequestLogon;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = RequestLogon (remote,ctx , userName );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_RequestLogon);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_RequestLogon;
+						summary.m_rmiName = RmiName_RequestLogon;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
 			case Rmi_Chat:
 				{
 					::Proud::RmiContext ctx;
@@ -61,13 +143,7 @@ namespace C2S {
 			            return true;
 			        }
 			
-					Proud::String a; __msg >> a;
-					int b; __msg >> b;
-					float c; __msg >> c;
-					MyClass d; __msg >> d;
-					Proud::CFastArray<int> f; __msg >> f;
-					Proud::CFastMap<int,float> g; __msg >> g;
-					Proud::ByteArray block; __msg >> block;
+					Proud::String text; __msg >> text;
 					m_core->PostCheckReadMessage(__msg,RmiName_Chat);
 					
 			
@@ -75,25 +151,7 @@ namespace C2S {
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,a);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,b);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,c);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,d);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,f);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,g);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,block);	
+						::Proud::AppendTextOut(parameterString,text);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Chat, 
 							RmiName_Chat,parameterString);
@@ -125,7 +183,7 @@ namespace C2S {
 					}
 						
 					// Call this method.
-					bool __ret = Chat (remote,ctx , a, b, c, d, f, g, block );
+					bool __ret = Chat (remote,ctx , text );
 						
 					if(__ret==false)
 					{
@@ -149,6 +207,170 @@ namespace C2S {
 					}
 				}
 				break;
+			case Rmi_RequestP2PGroup:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::HostIDArray groupMemberList; __msg >> groupMemberList;
+					m_core->PostCheckReadMessage(__msg,RmiName_RequestP2PGroup);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,groupMemberList);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_RequestP2PGroup, 
+							RmiName_RequestP2PGroup,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_RequestP2PGroup, 
+							RmiName_RequestP2PGroup, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_RequestP2PGroup, 
+							RmiName_RequestP2PGroup, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_RequestP2PGroup;
+						summary.m_rmiName = RmiName_RequestP2PGroup;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = RequestP2PGroup (remote,ctx , groupMemberList );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_RequestP2PGroup);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_RequestP2PGroup;
+						summary.m_rmiName = RmiName_RequestP2PGroup;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
+			case Rmi_RequestLeaveP2PGroup:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::HostID groupID; __msg >> groupID;
+					m_core->PostCheckReadMessage(__msg,RmiName_RequestLeaveP2PGroup);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,groupID);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_RequestLeaveP2PGroup, 
+							RmiName_RequestLeaveP2PGroup,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_RequestLeaveP2PGroup, 
+							RmiName_RequestLeaveP2PGroup, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_RequestLeaveP2PGroup, 
+							RmiName_RequestLeaveP2PGroup, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_RequestLeaveP2PGroup;
+						summary.m_rmiName = RmiName_RequestLeaveP2PGroup;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = RequestLeaveP2PGroup (remote,ctx , groupID );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_RequestLeaveP2PGroup);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_RequestLeaveP2PGroup;
+						summary.m_rmiName = RmiName_RequestLeaveP2PGroup;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
 		default:
 			goto __fail;
 		}		
@@ -160,11 +382,26 @@ __fail:
 		}
 	}
 	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_RequestLogon =_PNT("RequestLogon");
+	#else
+	const PNTCHAR* Stub::RmiName_RequestLogon =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
 	const PNTCHAR* Stub::RmiName_Chat =_PNT("Chat");
 	#else
 	const PNTCHAR* Stub::RmiName_Chat =_PNT("");
 	#endif
-	const PNTCHAR* Stub::RmiName_First = RmiName_Chat;
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_RequestP2PGroup =_PNT("RequestP2PGroup");
+	#else
+	const PNTCHAR* Stub::RmiName_RequestP2PGroup =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_RequestLeaveP2PGroup =_PNT("RequestLeaveP2PGroup");
+	#else
+	const PNTCHAR* Stub::RmiName_RequestLeaveP2PGroup =_PNT("");
+	#endif
+	const PNTCHAR* Stub::RmiName_First = RmiName_RequestLogon;
 
 }
 

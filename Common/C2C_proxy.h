@@ -17,9 +17,15 @@ namespace C2C {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool P2PChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & a, const int & b, const float & c) PN_SEALED; 
-	virtual bool P2PChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & a, const int & b, const float & c)   PN_SEALED;  
+	virtual bool P2PChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::HostID & p2pGroupID, const Proud::String & text) PN_SEALED; 
+	virtual bool P2PChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::HostID & p2pGroupID, const Proud::String & text)   PN_SEALED;  
+	virtual bool P2P_BigData ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::ByteArray & data, const Proud::HostID & p2pGroupID) PN_SEALED; 
+	virtual bool P2P_BigData ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::ByteArray & data, const Proud::HostID & p2pGroupID)   PN_SEALED;  
+	virtual bool P2P_BigDataAck ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::HostID & p2pGroupID) PN_SEALED; 
+	virtual bool P2P_BigDataAck ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::HostID & p2pGroupID)   PN_SEALED;  
 static const PNTCHAR* RmiName_P2PChat;
+static const PNTCHAR* RmiName_P2P_BigData;
+static const PNTCHAR* RmiName_P2P_BigDataAck;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

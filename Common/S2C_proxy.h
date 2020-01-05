@@ -17,12 +17,15 @@ namespace S2C {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & a, const int & b, const float & c) PN_SEALED; 
-	virtual bool ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & a, const int & b, const float & c)   PN_SEALED;  
-	virtual bool SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_SEALED; 
-	virtual bool SystemChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)   PN_SEALED;  
+	virtual bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & userName, const Proud::String & text) PN_SEALED; 
+	virtual bool ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & userName, const Proud::String & text)   PN_SEALED;  
+	virtual bool UserList_Add ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & userName, const Proud::HostID & hostID) PN_SEALED; 
+	virtual bool UserList_Add ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & userName, const Proud::HostID & hostID)   PN_SEALED;  
+	virtual bool UserList_Remove ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::HostID & hostID) PN_SEALED; 
+	virtual bool UserList_Remove ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::HostID & hostID)   PN_SEALED;  
 static const PNTCHAR* RmiName_ShowChat;
-static const PNTCHAR* RmiName_SystemChat;
+static const PNTCHAR* RmiName_UserList_Add;
+static const PNTCHAR* RmiName_UserList_Remove;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

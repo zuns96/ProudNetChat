@@ -1,6 +1,8 @@
-[access=public]
-global S2C 4000 // Fill your namespace and start ID number here.
+global S2C 2000 // Fill your namespace and start ID number here.
 {
-	ShowChat([in] Proud::String a,[in] int b, [in] float c);
-	SystemChat([in] Proud::String txt);
+	ShowChat([in] Proud::String userName, [in] Proud::String text);
+
+	UserList_Add([in] Proud::String userName, [in] Proud::HostID hostID);
+
+	UserList_Remove([in] Proud::HostID hostID);
 }

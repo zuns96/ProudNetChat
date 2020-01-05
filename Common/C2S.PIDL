@@ -1,5 +1,10 @@
-[access=public]
-global C2S 3000 // Fill your namespace and start ID number here.
+global C2S 4000 // Fill your namespace and start ID number here.
 {
-	Chat([in] Proud::String a,[in] int b,[in] float c, [in] MyClass d, [in] Proud::CFastArray<int> f, [in] Proud::CFastMap<int, float> g, [in] Proud::ByteArray block);
+	RequestLogon([in] Proud::String userName);
+
+	Chat([in] Proud::String text);
+
+	RequestP2PGroup([in] Proud::HostIDArray groupMemberList);
+
+	RequestLeaveP2PGroup([in] Proud::HostID groupID);
 }

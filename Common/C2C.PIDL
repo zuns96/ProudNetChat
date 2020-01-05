@@ -1,5 +1,8 @@
-[access=public]
 global C2C 2000 // Fill your namespace and start ID number here.
 {
-	P2PChat([in] Proud::String a,[in] int b, [in] float c);
+	P2PChat([in] Proud::HostID p2pGroupID, [in] Proud::String text);
+
+	P2P_BigData([in] Proud::ByteArray data, [in] Proud::HostID p2pGroupID);
+
+	P2P_BigDataAck([in] Proud::HostID p2pGroupID);
 }
