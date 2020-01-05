@@ -3,3 +3,11 @@
 ################################################################################
 
 /.vs/ProudNetChat/v15
+/Client/Release
+/Client/Debug
+/Common/Release
+/Common/Debug
+/Release
+/Debug
+/Server/Release
+/Server/Debug
