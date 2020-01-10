@@ -11,12 +11,10 @@ namespace S2C {
                
 		Rmi_ShowChat,
                
-		Rmi_UserList_Add,
-               
-		Rmi_UserList_Remove,
+		Rmi_SystemChat,
 	};
 
-	int g_RmiIDListCount = 3;
+	int g_RmiIDListCount = 2;
 
 }
 

@@ -1,15 +1,20 @@
 #pragma once
-using namespace Proud;
+extern Proud::Guid g_Version;
+extern int g_ServerPort;
 
-extern Guid gProtocolVersion;
-extern int gServerPort;
+class MyClass
+{
+public:
+	int a;
+	float b;
+	double c;
+};
 
 namespace Proud
-{ 
-	inline void AppendTextOut(String &a, const HostIDArray &b)
-	{
-		String f;
-		f.Format(L"<Proud::HostIDArray>");
-		a += f;
-	}
+{
+	void AppendTextOut(Proud::String &a, const MyClass &b);
+
+	Proud::CMessage& operator >> (Proud::CMessage &a, const MyClass &b);
+
+	Proud::CMessage& operator << (Proud::CMessage &a, const MyClass &b);
 }

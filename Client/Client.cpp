@@ -68,48 +68,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 
 #pragma region Legacy
-//class C2CStub : public C2C::Stub
-//{
-//public :
-//	DECRMI_C2C_P2PChat;
-//};
-//
-//CriticalSection g_critSec;
-//
-//DEFRMI_C2C_P2PChat(C2CStub)
-//{
-//	printf("[Client] P2PChat : relayed:%s, a=%s, b=%d, c=%f\n", rmiContext.m_relayed ? "true" : "false", a.GetString(), b, c);
-//	return true;
-//}
-//
-//C2C::Proxy g_C2CProxy;
-//C2CStub g_C2CStub;
-//
-//C2S::Proxy g_C2SProxy;
-//
-//class S2CStub : public S2C::Stub
-//{
-//public :
-//	DECRMI_S2C_ShowChat;
-//	DECRMI_S2C_SystemChat;
-//};
-//
-//DEFRMI_S2C_ShowChat(S2CStub)
-//{
-//	CriticalSectionLock lock(g_critSec, true);
-//	printf("[Client] ShowChat: a=%s, b=%d, c=%f\n", StringT2A(a).GetString(), b, c);
-//	return true;
-//}
-//
-//DEFRMI_S2C_SystemChat(S2CStub)
-//{
-//	CriticalSectionLock lock(g_critSec, true);
-//	printf("[Client] ShowChat: a=%s, b=%d, c=%f\n", StringT2A(txt).GetString());
-//	return true;
-//}
-//
-//S2CStub g_S2CStub;
-//
+CriticalSection g_critSec;
+
+C2S::Proxy g_C2SProxy;
+
+class S2CStub : public S2C::Stub
+{
+public :
+	DECRMI_S2C_ShowChat;
+	DECRMI_S2C_SystemChat;
+};
+
+DEFRMI_S2C_ShowChat(S2CStub)
+{
+	CriticalSectionLock lock(g_critSec, true);
+	printf("[Client] ShowChat: text=%s\n", StringT2A(txt).GetString());
+	return true;
+}
+
+DEFRMI_S2C_SystemChat(S2CStub)
+{
+	CriticalSectionLock lock(g_critSec, true);
+	printf("[Client] SystemChat: text=%s\n", StringT2A(txt).GetString());
+	return true;
+}
+
+S2CStub g_S2CStub;
+
 //int main()
 //{
 //	bool isConnected = false;
@@ -125,26 +110,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 //		{
 //			printf("Succeed to connect server. Allocated hostID=%d\n", netClient->GetLocalHostID());
 //			isConnected = true;
-//			MyClass myclass;
-//			myclass.a = 1;
-//			myclass.b = 1.3f;
-//			myclass.c = 1.4567;
-//
-//			CFastArray<int> arr;
-//			arr.Add(4);
-//			arr.Add(5);
-//
-//			CFastMap<int, float> map;
-//			map.Add(1, 5.1f);
-//			map.Add(2, 4.1f);
-//
-//			ByteArray block;
-//			for (int i = 0; i < 100; ++i)
-//				block.Add((uint8_t)i);
 //
 //			g_C2SProxy.Chat(HostID_Server,
 //				RmiContext::ReliableSend,
-//				_PNT("Hello ProudNet~!!!."), 333, 22.33f, myclass, arr, map, block);
+//				_PNT("Hello ProudNet~!!!."));
 //		}
 //		else
 //		{
@@ -170,7 +139,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 //		if (memberHostID != netClient->GetLocalHostID())
 //		{
 //			memberHostID = memberHostID;
-//			g_C2CProxy.P2PChat(memberHostID, RmiContext::ReliableSend, _PNT("Welcome!!"), 1, 1.0f);
 //		}
 //	};
 //
@@ -205,13 +173,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 //
 //	netClient->AttachProxy(&g_C2SProxy);
 //	netClient->AttachStub(&g_S2CStub);
-//	netClient->AttachProxy(&g_C2CProxy);
-//	netClient->AttachStub(&g_C2CStub);
 //
 //	CNetConnectionParam cp;
-//	cp.m_protocolVersion = gProtocolVersion;
+//	cp.m_protocolVersion = g_Version;
 //	cp.m_serverIP = _PNT("localhost");
-//	cp.m_serverPort = gServerPort;
+//	cp.m_serverPort = g_ServerPort;
 //
 //	netClient->Connect(cp);
 //
@@ -241,11 +207,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 //			if (isConnected)
 //			{
 //				CriticalSectionLock lock(g_critSec, true);
-//
-//				RmiContext sendHow = RmiContext::ReliableSend;
-//				sendHow.m_enableLoopback = false;
-//				
-//				g_C2CProxy.P2PChat(recentP2PGroupHostID, sendHow, _PNT("Welcome ProudNet!!"), 1, 1);
+//				RmiContext rmi = RmiContext::ReliableSend;
+//				rmi.m_enableLoopback = false;
+//				g_C2SProxy.Chat(HostID_Server, rmi, _PNT("hello"));
 //			}
 //			else
 //			{

@@ -9,16 +9,10 @@ namespace C2S {
 
 	::Proud::RmiID g_RmiIDList[] = {
                
-		Rmi_RequestLogon,
-               
 		Rmi_Chat,
-               
-		Rmi_RequestP2PGroup,
-               
-		Rmi_RequestLeaveP2PGroup,
 	};
 
-	int g_RmiIDListCount = 4;
+	int g_RmiIDListCount = 1;
 
 }
 

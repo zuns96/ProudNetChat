@@ -180,30 +180,6 @@
     <ClCompile Include="Vars.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C2C.PIDL">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename).pidl ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe " "%(FullPath)" -cpp  </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)_common.cpp;%(Filename)_common.h;%(Filename)_proxy.cpp;%(Filename)_proxy.h;%(Filename)_stub.cpp;%(Filename)_stub.h;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe;%(AdditionalInputs)</AdditionalInputs>
-      <PIDLVersion Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2.0</PIDLVersion>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compiling %(Filename).pidl ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe " "%(FullPath)" -cpp  </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)_common.cpp;%(Filename)_common.h;%(Filename)_proxy.cpp;%(Filename)_proxy.h;%(Filename)_stub.cpp;%(Filename)_stub.h;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe;%(AdditionalInputs)</AdditionalInputs>
-      <PIDLVersion Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">2.0</PIDLVersion>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling %(Filename).pidl ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe " "%(FullPath)" -cpp  </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename)_common.cpp;%(Filename)_common.h;%(Filename)_proxy.cpp;%(Filename)_proxy.h;%(Filename)_stub.cpp;%(Filename)_stub.h;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe;%(AdditionalInputs)</AdditionalInputs>
-      <PIDLVersion Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">2.0</PIDLVersion>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compiling %(Filename).pidl ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe " "%(FullPath)" -cpp  </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)_common.cpp;%(Filename)_common.h;%(Filename)_proxy.cpp;%(Filename)_proxy.h;%(Filename)_stub.cpp;%(Filename)_stub.h;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe;%(AdditionalInputs)</AdditionalInputs>
-      <PIDLVersion Condition="'$(Configuration)|$(Platform)'=='Release|x64'">2.0</PIDLVersion>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="C2S.PIDL">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename).pidl ...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe " "%(FullPath)" -cpp  </Command>

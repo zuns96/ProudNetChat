@@ -13,7 +13,7 @@ namespace S2C {
 
 
         
-	bool Proxy::ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & userName, const Proud::String & text)	{
+	bool Proxy::ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -21,14 +21,13 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 ::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_ShowChat;
 __msg.Write(__msgid); 
 	
-__msg << userName;
-__msg << text;
+__msg << txt;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
 			RmiName_ShowChat, (::Proud::RmiID)Rmi_ShowChat);
 	}
 
-	bool Proxy::ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & userName, const Proud::String & text)  	{
+	bool Proxy::ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -36,69 +35,38 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 ::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_ShowChat;
 __msg.Write(__msgid); 
 	
-__msg << userName;
-__msg << text;
+__msg << txt;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_ShowChat, (::Proud::RmiID)Rmi_ShowChat);
 	}
         
-	bool Proxy::UserList_Add ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & userName, const Proud::HostID & hostID)	{
+	bool Proxy::SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_UserList_Add;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_SystemChat;
 __msg.Write(__msgid); 
 	
-__msg << userName;
-__msg << hostID;
+__msg << txt;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_UserList_Add, (::Proud::RmiID)Rmi_UserList_Add);
+			RmiName_SystemChat, (::Proud::RmiID)Rmi_SystemChat);
 	}
 
-	bool Proxy::UserList_Add ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & userName, const Proud::HostID & hostID)  	{
+	bool Proxy::SystemChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_UserList_Add;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_SystemChat;
 __msg.Write(__msgid); 
 	
-__msg << userName;
-__msg << hostID;
+__msg << txt;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_UserList_Add, (::Proud::RmiID)Rmi_UserList_Add);
-	}
-        
-	bool Proxy::UserList_Remove ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::HostID & hostID)	{
-		::Proud::CMessage __msg;
-__msg.UseInternalBuffer();
-__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
-
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_UserList_Remove;
-__msg.Write(__msgid); 
-	
-__msg << hostID;
-		
-		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_UserList_Remove, (::Proud::RmiID)Rmi_UserList_Remove);
-	}
-
-	bool Proxy::UserList_Remove ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::HostID & hostID)  	{
-		::Proud::CMessage __msg;
-__msg.UseInternalBuffer();
-__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
-
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_UserList_Remove;
-__msg.Write(__msgid); 
-	
-__msg << hostID;
-		
-		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_UserList_Remove, (::Proud::RmiID)Rmi_UserList_Remove);
+			RmiName_SystemChat, (::Proud::RmiID)Rmi_SystemChat);
 	}
 #ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("ShowChat");
@@ -106,14 +74,9 @@ const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("ShowChat");
 const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_UserList_Add =_PNT("UserList_Add");
+const PNTCHAR* Proxy::RmiName_SystemChat =_PNT("SystemChat");
 #else
-const PNTCHAR* Proxy::RmiName_UserList_Add =_PNT("");
-#endif
-#ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_UserList_Remove =_PNT("UserList_Remove");
-#else
-const PNTCHAR* Proxy::RmiName_UserList_Remove =_PNT("");
+const PNTCHAR* Proxy::RmiName_SystemChat =_PNT("");
 #endif
 const PNTCHAR* Proxy::RmiName_First = RmiName_ShowChat;
 

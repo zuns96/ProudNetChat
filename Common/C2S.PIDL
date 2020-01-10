@@ -1,10 +1,5 @@
-global C2S 4000 // Fill your namespace and start ID number here.
+[access=public]
+global C2S 3000 // Fill your namespace and start ID number here.
 {
-	RequestLogon([in] Proud::String userName);
-
-	Chat([in] Proud::String text);
-
-	RequestP2PGroup([in] Proud::HostIDArray groupMemberList);
-
-	RequestLeaveP2PGroup([in] Proud::HostID groupID);
+	Chat([in] Proud::String txt);
 }

@@ -40,11 +40,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C2C.PIDL">
-      <Filter>PIDL</Filter>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="C2S.PIDL">
       <Filter>PIDL</Filter>
     </CustomBuild>
