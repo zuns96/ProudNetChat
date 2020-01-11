@@ -21,6 +21,16 @@ namespace C2S {
 	{
 	public:
                
+		virtual bool OnLogOn ( ::Proud::HostID, ::Proud::RmiContext& , const User & )		{ 
+			return false;
+		} 
+
+#define DECRMI_C2S_OnLogOn bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user) PN_OVERRIDE
+
+#define DEFRMI_C2S_OnLogOn(DerivedClass) bool DerivedClass::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)
+#define CALL_C2S_OnLogOn OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)
+#define PARAM_C2S_OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)
+               
 		virtual bool Chat ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & )		{ 
 			return false;
 		} 
@@ -32,6 +42,7 @@ namespace C2S {
 #define PARAM_C2S_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
+		static const PNTCHAR* RmiName_OnLogOn;
 		static const PNTCHAR* RmiName_Chat;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
@@ -43,6 +54,15 @@ namespace C2S {
 	class StubFunctional : public Stub 
 	{
 	public:
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const User & ) > OnLogOn_Function;
+		virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user) 
+		{ 
+			if (OnLogOn_Function==nullptr) 
+				return true; 
+			return OnLogOn_Function(remote,rmiContext, user); 
+		}
+
                
 		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & ) > Chat_Function;
 		virtual bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) 

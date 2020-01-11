@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-
+#include "ServerDefine.h"
 #include "Server.h"
 
 using namespace std;
@@ -8,8 +8,8 @@ using namespace Proud;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id);
 HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id);
-HWND CreateTextEdit(int x, int y, int width, int height, HWND hWnd, int id);
 void Draw(HWND hWnd);
+void Quit(HWND hWnd);
 
 HINSTANCE g_hInst;
 HWND hUserList;
@@ -20,16 +20,12 @@ LPCTSTR lpszClass = TEXT("chat_server");
 int iWidth = 400;
 int iHeight = 600;
 
-class C2SStub : public C2S::Stub
-{
-public:
-	DECRMI_C2S_Chat;
-};
+CNetServer * srv = NULL;
+CFastArray<SUser> userList;
 
 C2SStub g_C2SStub;
 S2C::Proxy g_S2CProxy;
 HostID g_groupHostID = HostID_None;
-CNetServer * srv = NULL;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -37,42 +33,42 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	srv->OnClientJoin = [](CNetClientInfo * clientInfo)
 	{
-		TCHAR buf[256];
+		TCHAR buf[LOG_BUF_SIZE];
 		wsprintf(buf, TEXT("Client %d connected."), clientInfo->m_HostID);
 		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	};
 
 	srv->OnClientLeave = [](CNetClientInfo * clientInfo, ErrorInfo * errorInfo, const ByteArray& comment)
 	{
-		TCHAR buf[256];
+		TCHAR buf[LOG_BUF_SIZE];
 		wsprintf(buf, TEXT("Client %d disconnected."), clientInfo->m_HostID);
 		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	};
 
 	srv->OnError = [](ErrorInfo * errorInfo)
 	{
-		TCHAR buf[256];
+		TCHAR buf[LOG_BUF_SIZE];
 		wsprintf(buf, TEXT("OnError : %s", StringT2A(errorInfo->ToString()).GetString()));
 		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	};
 
 	srv->OnWarning = [](ErrorInfo * errorInfo)
 	{
-		TCHAR buf[256];
+		TCHAR buf[LOG_BUF_SIZE];
 		wsprintf(buf, TEXT("OnWarning : %s", StringT2A(errorInfo->ToString()).GetString()));
 		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	};
 
 	srv->OnInformation = [](ErrorInfo * errorInfo)
 	{
-		TCHAR buf[256];
+		TCHAR buf[LOG_BUF_SIZE];
 		wsprintf(buf, TEXT("OnInformation : %s", StringT2A(errorInfo->ToString()).GetString()));
 		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	};
 
 	srv->OnException = [](const Exception &e)
 	{
-		TCHAR buf[256];
+		TCHAR buf[LOG_BUF_SIZE];
 		wsprintf(buf, TEXT("OnException : %s"), e.what());
 		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	};
@@ -90,9 +86,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	}
 	catch (Exception &e)
 	{
-		TCHAR buf[256];
-		wsprintf(buf, TEXT("Server start failed : %s"), e.what());
-		SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
+		char buf[LOG_BUF_SIZE];
+		sprintf(buf, "Server start failed : %s", e.what());
 		return 0;
 	}
 
@@ -138,7 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case WINDOW_ID_EXITBTN:
-			DestroyWindow(hWnd);
+			Quit(hWnd);
 			break;
 		case WINDOW_ID_KICKBTN:
 			MessageBox(hWnd, TEXT("추방"), TEXT("추방하기 버튼"), MB_OK);
@@ -164,16 +159,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 	case WM_DESTROY:
-		srv->Stop();
-		delete srv;
-		srv = NULL;
 		PostQuitMessage(0);
+		return 0;
+	case WM_CLOSE:
+		Quit(hWnd);
 		return 0;
 	case WM_PAINT:
 		Draw(hWnd);
 		return 0;
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
+}
+
+void Quit(HWND hWnd)
+{
+	srv->CloseEveryConnection();
+	srv->Stop();
+	delete srv;
+	srv = NULL;
+	DestroyWindow(hWnd);
 }
 
 void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id)
@@ -197,13 +201,42 @@ void Draw(HWND hWnd)
 	EndPaint(hWnd, &ps);
 }
 
-DEFRMI_C2S_Chat(C2SStub)
+DEFRMI_C2S_OnLogOn(C2SStub)
 {
-	TCHAR buf[512];
-	wsprintf(buf, TEXT("message received : hostID : %d, txt : %s"), remote, txt);
+	TCHAR buf[LOG_BUF_SIZE];
+	SUser sUser;
+	sUser.SetUserData(user, remote);
+	wsprintf(buf, TEXT("LogOn!! : hostID : %d, txt : %s"), sUser.m_hostID, user.m_name);
 	SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 
-	// Echo chatting message which received from server to client.
-	g_S2CProxy.ShowChat(remote, RmiContext::ReliableSend, txt);
+	g_S2CProxy.SystemChat(sUser.m_hostID, RmiContext::ReliableSend, L"Login Success");
+	int cnt = userList.Count;
+	for (int i = 0; i < cnt; ++i)
+	{
+		wsprintf(buf, TEXT("%d님이 입장 했습니다."), sUser.m_hostID);
+		g_S2CProxy.SystemChat(userList[i].m_hostID, RmiContext::ReliableSend, buf);
+	}
+	userList.Add(sUser);
 	return true;
+}
+
+DEFRMI_C2S_Chat(C2SStub)
+{
+	TCHAR buf[LOG_BUF_SIZE];
+	wsprintf(buf, TEXT("%d : %s"), remote, txt);
+	SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
+
+	//g_S2CProxy.ShowChat(remote, RmiContext::ReliableSend, txt);
+	int cnt = userList.Count;
+	for (int i = 0; i < cnt; ++i)
+	{
+		g_S2CProxy.ShowChat(userList[i].m_hostID, RmiContext::ReliableSend, buf);
+	}
+	return true;
+}
+
+void SUser::SetUserData(const User &user, HostID hostID)
+{
+	m_name = user.m_name;
+	m_hostID = hostID;
 }

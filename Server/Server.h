@@ -1,14 +1,30 @@
 #pragma once
-#include <iostream>
 #include <ProudNetServer.h>
-
 #include "../Common/Vars.h"
+
 #include "../Common/C2S_common.cpp"
 #include "../Common/S2C_common.cpp"
+
 #include "../Common/C2S_stub.h"
-#include "../Common/S2C_proxy.h"
 #include "../Common/C2S_stub.cpp"
+
+#include "../Common/S2C_proxy.h"
 #include "../Common/S2C_proxy.cpp"
+
+class C2SStub : public C2S::Stub
+{
+public:
+	DECRMI_C2S_OnLogOn;
+	DECRMI_C2S_Chat;
+};
+
+class SUser : User
+{
+public :
+	Proud::HostID m_hostID;
+
+	void SetUserData(const User &user, Proud::HostID hostID);
+};
 
 enum WINDOW_ID : int
 {
