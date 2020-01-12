@@ -2,7 +2,7 @@
 extern Proud::Guid g_Version;
 extern int g_ServerPort;
 
-class User
+class User 
 {
 public:
 	Proud::String m_name;

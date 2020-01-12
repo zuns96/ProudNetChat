@@ -13,7 +13,35 @@ namespace S2C {
 
 
         
-	bool Proxy::ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)	{
+	bool Proxy::LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id)	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_LoginSuccess;
+__msg.Write(__msgid); 
+	
+__msg << id;
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_LoginSuccess, (::Proud::RmiID)Rmi_LoginSuccess);
+	}
+
+	bool Proxy::LoginSuccess ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_LoginSuccess;
+__msg.Write(__msgid); 
+	
+__msg << id;
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_LoginSuccess, (::Proud::RmiID)Rmi_LoginSuccess);
+	}
+        
+	bool Proxy::ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -22,12 +50,13 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 __msg.Write(__msgid); 
 	
 __msg << txt;
+__msg << sendorID;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
 			RmiName_ShowChat, (::Proud::RmiID)Rmi_ShowChat);
 	}
 
-	bool Proxy::ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)  	{
+	bool Proxy::ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt, const int & sendorID)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -36,6 +65,7 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 __msg.Write(__msgid); 
 	
 __msg << txt;
+__msg << sendorID;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_ShowChat, (::Proud::RmiID)Rmi_ShowChat);
@@ -69,6 +99,11 @@ __msg << txt;
 			RmiName_SystemChat, (::Proud::RmiID)Rmi_SystemChat);
 	}
 #ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_LoginSuccess =_PNT("LoginSuccess");
+#else
+const PNTCHAR* Proxy::RmiName_LoginSuccess =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("ShowChat");
 #else
 const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("");
@@ -78,7 +113,7 @@ const PNTCHAR* Proxy::RmiName_SystemChat =_PNT("SystemChat");
 #else
 const PNTCHAR* Proxy::RmiName_SystemChat =_PNT("");
 #endif
-const PNTCHAR* Proxy::RmiName_First = RmiName_ShowChat;
+const PNTCHAR* Proxy::RmiName_First = RmiName_LoginSuccess;
 
 }
 

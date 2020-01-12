@@ -1,6 +1,7 @@
 [access=public]
 global S2C 4000 // Fill your namespace and start ID number here.
 {
-	ShowChat([in] Proud::String txt);
+	LoginSuccess([in] Proud::String id);
+	ShowChat([in] Proud::String txt, [in] int sendorID);
 	SystemChat([in] Proud::String txt);
 }

@@ -17,8 +17,8 @@ namespace C2S {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user) PN_SEALED; 
-	virtual bool OnLogOn ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const User & user)   PN_SEALED;  
+	virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password) PN_SEALED; 
+	virtual bool OnLogOn ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id, const Proud::String & password)   PN_SEALED;  
 	virtual bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_SEALED; 
 	virtual bool Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)   PN_SEALED;  
 static const PNTCHAR* RmiName_OnLogOn;

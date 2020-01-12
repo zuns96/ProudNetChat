@@ -43,6 +43,88 @@ namespace S2C {
 					
 		switch((int)__rmiID) // case is to prevent from clang compile error
 		{
+			case Rmi_LoginSuccess:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					Proud::String id; __msg >> id;
+					m_core->PostCheckReadMessage(__msg,RmiName_LoginSuccess);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,id);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_LoginSuccess, 
+							RmiName_LoginSuccess,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_LoginSuccess, 
+							RmiName_LoginSuccess, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_LoginSuccess, 
+							RmiName_LoginSuccess, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_LoginSuccess;
+						summary.m_rmiName = RmiName_LoginSuccess;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = LoginSuccess (remote,ctx , id );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_LoginSuccess);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_LoginSuccess;
+						summary.m_rmiName = RmiName_LoginSuccess;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
 			case Rmi_ShowChat:
 				{
 					::Proud::RmiContext ctx;
@@ -62,6 +144,7 @@ namespace S2C {
 			        }
 			
 					Proud::String txt; __msg >> txt;
+					int sendorID; __msg >> sendorID;
 					m_core->PostCheckReadMessage(__msg,RmiName_ShowChat);
 					
 			
@@ -70,6 +153,9 @@ namespace S2C {
 						::Proud::String parameterString;
 						
 						::Proud::AppendTextOut(parameterString,txt);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,sendorID);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_ShowChat, 
 							RmiName_ShowChat,parameterString);
@@ -101,7 +187,7 @@ namespace S2C {
 					}
 						
 					// Call this method.
-					bool __ret = ShowChat (remote,ctx , txt );
+					bool __ret = ShowChat (remote,ctx , txt, sendorID );
 						
 					if(__ret==false)
 					{
@@ -218,6 +304,11 @@ __fail:
 		}
 	}
 	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_LoginSuccess =_PNT("LoginSuccess");
+	#else
+	const PNTCHAR* Stub::RmiName_LoginSuccess =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
 	const PNTCHAR* Stub::RmiName_ShowChat =_PNT("ShowChat");
 	#else
 	const PNTCHAR* Stub::RmiName_ShowChat =_PNT("");
@@ -227,7 +318,7 @@ __fail:
 	#else
 	const PNTCHAR* Stub::RmiName_SystemChat =_PNT("");
 	#endif
-	const PNTCHAR* Stub::RmiName_First = RmiName_ShowChat;
+	const PNTCHAR* Stub::RmiName_First = RmiName_LoginSuccess;
 
 }
 

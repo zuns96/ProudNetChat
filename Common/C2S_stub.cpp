@@ -61,7 +61,8 @@ namespace C2S {
 			            return true;
 			        }
 			
-					User user; __msg >> user;
+					Proud::String id; __msg >> id;
+					Proud::String password; __msg >> password;
 					m_core->PostCheckReadMessage(__msg,RmiName_OnLogOn);
 					
 			
@@ -69,7 +70,10 @@ namespace C2S {
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,user);	
+						::Proud::AppendTextOut(parameterString,id);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,password);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_OnLogOn, 
 							RmiName_OnLogOn,parameterString);
@@ -101,7 +105,7 @@ namespace C2S {
 					}
 						
 					// Call this method.
-					bool __ret = OnLogOn (remote,ctx , user );
+					bool __ret = OnLogOn (remote,ctx , id, password );
 						
 					if(__ret==false)
 					{

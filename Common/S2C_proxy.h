@@ -17,10 +17,13 @@ namespace S2C {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_SEALED; 
-	virtual bool ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)   PN_SEALED;  
+	virtual bool LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id) PN_SEALED; 
+	virtual bool LoginSuccess ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id)   PN_SEALED;  
+	virtual bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID) PN_SEALED; 
+	virtual bool ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt, const int & sendorID)   PN_SEALED;  
 	virtual bool SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_SEALED; 
 	virtual bool SystemChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)   PN_SEALED;  
+static const PNTCHAR* RmiName_LoginSuccess;
 static const PNTCHAR* RmiName_ShowChat;
 static const PNTCHAR* RmiName_SystemChat;
 static const PNTCHAR* RmiName_First;

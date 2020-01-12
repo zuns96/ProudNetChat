@@ -21,15 +21,15 @@ namespace C2S {
 	{
 	public:
                
-		virtual bool OnLogOn ( ::Proud::HostID, ::Proud::RmiContext& , const User & )		{ 
+		virtual bool OnLogOn ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & , const Proud::String & )		{ 
 			return false;
 		} 
 
-#define DECRMI_C2S_OnLogOn bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user) PN_OVERRIDE
+#define DECRMI_C2S_OnLogOn bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password) PN_OVERRIDE
 
-#define DEFRMI_C2S_OnLogOn(DerivedClass) bool DerivedClass::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)
-#define CALL_C2S_OnLogOn OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)
-#define PARAM_C2S_OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)
+#define DEFRMI_C2S_OnLogOn(DerivedClass) bool DerivedClass::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)
+#define CALL_C2S_OnLogOn OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)
+#define PARAM_C2S_OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)
                
 		virtual bool Chat ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & )		{ 
 			return false;
@@ -55,12 +55,12 @@ namespace C2S {
 	{
 	public:
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const User & ) > OnLogOn_Function;
-		virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & , const Proud::String & ) > OnLogOn_Function;
+		virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password) 
 		{ 
 			if (OnLogOn_Function==nullptr) 
 				return true; 
-			return OnLogOn_Function(remote,rmiContext, user); 
+			return OnLogOn_Function(remote,rmiContext, id, password); 
 		}
 
                

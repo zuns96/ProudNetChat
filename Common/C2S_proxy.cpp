@@ -13,7 +13,7 @@ namespace C2S {
 
 
         
-	bool Proxy::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const User & user)	{
+	bool Proxy::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -21,13 +21,14 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 ::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_OnLogOn;
 __msg.Write(__msgid); 
 	
-__msg << user;
+__msg << id;
+__msg << password;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
 			RmiName_OnLogOn, (::Proud::RmiID)Rmi_OnLogOn);
 	}
 
-	bool Proxy::OnLogOn ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const User & user)  	{
+	bool Proxy::OnLogOn ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id, const Proud::String & password)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -35,7 +36,8 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 ::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_OnLogOn;
 __msg.Write(__msgid); 
 	
-__msg << user;
+__msg << id;
+__msg << password;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_OnLogOn, (::Proud::RmiID)Rmi_OnLogOn);

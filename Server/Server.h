@@ -18,23 +18,23 @@ public:
 	DECRMI_C2S_Chat;
 };
 
-class SUser : User
+class SUser : public User
 {
 public :
 	Proud::HostID m_hostID;
 
-	void SetUserData(const User &user, Proud::HostID hostID);
+	void SetUserData(const Proud::String &id, Proud::HostID hostID);
 };
 
 enum WINDOW_ID : int
 {
 	EXIT_BUTTON = 0,
 	KICK_BUTTON = 1,
-	USER_LIST = 2,
+	CHAT_LIST = 2,
 	LOG_LIST = 3,
 };
 
 #define WINDOW_ID_EXITBTN WINDOW_ID::EXIT_BUTTON
 #define WINDOW_ID_KICKBTN WINDOW_ID::KICK_BUTTON
-#define WINDOW_ID_USERLIST WINDOW_ID::USER_LIST
+#define WINDOW_ID_CHATLIST WINDOW_ID::CHAT_LIST
 #define WINDOW_ID_LOGLIST WINDOW_ID::LOG_LIST
