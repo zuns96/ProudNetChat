@@ -150,13 +150,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
+int curSelectUserIdx = -1;
 LRESULT CALLBACK ChatWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMessage)
 	{
 	case WM_CREATE:
 		CreatePushButton(TEXT("닫기"), 10, iChatClientHeight - 85, 100, 25, hWnd, WINDOW_ID_EXITBTN);
-		//CreatePushButton(TEXT("추방하기"), iChatClientWidth - 100 - 25, iChatClientHeight - 85, 100, 25, hWnd, WINDOW_ID_KICKBTN);
+		CreatePushButton(TEXT("추방하기"), iChatClientWidth - 100 - 25, iChatClientHeight - 85, 100, 25, hWnd, WINDOW_ID_KICKBTN);
 		hUserList = CreateListBox(10, 30, iChatClientWidth - 35, iChatClientHeight - 390, hWnd, WINDOW_ID_CHATLIST);
 		hLogList = CreateListBox(10, 270, iChatClientWidth - 35, iChatClientHeight - 390, hWnd, WINDOW_ID_LOGLIST);
 		return 0;
@@ -167,21 +168,23 @@ LRESULT CALLBACK ChatWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 			Quit(hWnd);
 			break;
 		case WINDOW_ID_KICKBTN:
-			MessageBox(hWnd, TEXT("추방"), TEXT("추방하기 버튼"), MB_OK);
+			if (curSelectUserIdx < userList.Count > 0)
+			{
+				TCHAR buf[LOG_BUF_SIZE];
+				SUser user = userList[curSelectUserIdx];
+				wsprintf(buf, TEXT("[%d]%s님을 추방하시겠습니까?"), user.m_hostID, user.m_name);
+				if (MessageBox(hWnd, buf, TEXT("추방"), MB_OKCANCEL) == IDOK)
+				{
+					curSelectUserIdx = -1;
+					srv->CloseConnection(user.m_hostID);
+				}
+			}
 			break;
 		case WINDOW_ID_CHATLIST:
 			switch (HIWORD(wParam))
 			{
 			case LBN_SELCHANGE:
-				int i = SendMessage(hUserList, LB_GETCURSEL, 0, 0);
-				break;
-			}
-			break;
-		case WINDOW_ID_LOGLIST:
-			switch (HIWORD(wParam))
-			{
-			case LBN_SELCHANGE:
-				int i = SendMessage(hLogList, LB_GETCURSEL, 0, 0);
+				curSelectUserIdx = SendMessage(hUserList, LB_GETCURSEL, 0, 0);
 				break;
 			}
 			break;
