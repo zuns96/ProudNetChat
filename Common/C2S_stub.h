@@ -21,29 +21,29 @@ namespace C2S {
 	{
 	public:
                
-		virtual bool OnLogOn ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & , const Proud::String & )		{ 
+		virtual bool Send_Req_Login ( ::Proud::HostID, ::Proud::RmiContext& , const Req_Login & )		{ 
 			return false;
 		} 
 
-#define DECRMI_C2S_OnLogOn bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password) PN_OVERRIDE
+#define DECRMI_C2S_Send_Req_Login bool Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req) PN_OVERRIDE
 
-#define DEFRMI_C2S_OnLogOn(DerivedClass) bool DerivedClass::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)
-#define CALL_C2S_OnLogOn OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)
-#define PARAM_C2S_OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)
+#define DEFRMI_C2S_Send_Req_Login(DerivedClass) bool DerivedClass::Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req)
+#define CALL_C2S_Send_Req_Login Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req)
+#define PARAM_C2S_Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req)
                
-		virtual bool Chat ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & )		{ 
+		virtual bool Send_Req_Chat ( ::Proud::HostID, ::Proud::RmiContext& , const Req_Chat & )		{ 
 			return false;
 		} 
 
-#define DECRMI_C2S_Chat bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_OVERRIDE
+#define DECRMI_C2S_Send_Req_Chat bool Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req) PN_OVERRIDE
 
-#define DEFRMI_C2S_Chat(DerivedClass) bool DerivedClass::Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
-#define CALL_C2S_Chat Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
-#define PARAM_C2S_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
+#define DEFRMI_C2S_Send_Req_Chat(DerivedClass) bool DerivedClass::Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req)
+#define CALL_C2S_Send_Req_Chat Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req)
+#define PARAM_C2S_Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req)
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
-		static const PNTCHAR* RmiName_OnLogOn;
-		static const PNTCHAR* RmiName_Chat;
+		static const PNTCHAR* RmiName_Send_Req_Login;
+		static const PNTCHAR* RmiName_Send_Req_Chat;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
 		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
@@ -55,21 +55,21 @@ namespace C2S {
 	{
 	public:
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & , const Proud::String & ) > OnLogOn_Function;
-		virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Req_Login & ) > Send_Req_Login_Function;
+		virtual bool Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req) 
 		{ 
-			if (OnLogOn_Function==nullptr) 
+			if (Send_Req_Login_Function==nullptr) 
 				return true; 
-			return OnLogOn_Function(remote,rmiContext, id, password); 
+			return Send_Req_Login_Function(remote,rmiContext, req); 
 		}
 
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & ) > Chat_Function;
-		virtual bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Req_Chat & ) > Send_Req_Chat_Function;
+		virtual bool Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req) 
 		{ 
-			if (Chat_Function==nullptr) 
+			if (Send_Req_Chat_Function==nullptr) 
 				return true; 
-			return Chat_Function(remote,rmiContext, txt); 
+			return Send_Req_Chat_Function(remote,rmiContext, req); 
 		}
 
 	};

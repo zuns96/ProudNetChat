@@ -13,74 +13,72 @@ namespace C2S {
 
 
         
-	bool Proxy::OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password)	{
+	bool Proxy::Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_OnLogOn;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Send_Req_Login;
 __msg.Write(__msgid); 
 	
-__msg << id;
-__msg << password;
+__msg << req;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_OnLogOn, (::Proud::RmiID)Rmi_OnLogOn);
+			RmiName_Send_Req_Login, (::Proud::RmiID)Rmi_Send_Req_Login);
 	}
 
-	bool Proxy::OnLogOn ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id, const Proud::String & password)  	{
+	bool Proxy::Send_Req_Login ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Req_Login & req)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_OnLogOn;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Send_Req_Login;
 __msg.Write(__msgid); 
 	
-__msg << id;
-__msg << password;
+__msg << req;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_OnLogOn, (::Proud::RmiID)Rmi_OnLogOn);
+			RmiName_Send_Req_Login, (::Proud::RmiID)Rmi_Send_Req_Login);
 	}
         
-	bool Proxy::Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)	{
+	bool Proxy::Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Chat;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Send_Req_Chat;
 __msg.Write(__msgid); 
 	
-__msg << txt;
+__msg << req;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_Chat, (::Proud::RmiID)Rmi_Chat);
+			RmiName_Send_Req_Chat, (::Proud::RmiID)Rmi_Send_Req_Chat);
 	}
 
-	bool Proxy::Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)  	{
+	bool Proxy::Send_Req_Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Req_Chat & req)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Chat;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Send_Req_Chat;
 __msg.Write(__msgid); 
 	
-__msg << txt;
+__msg << req;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_Chat, (::Proud::RmiID)Rmi_Chat);
+			RmiName_Send_Req_Chat, (::Proud::RmiID)Rmi_Send_Req_Chat);
 	}
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_OnLogOn =_PNT("OnLogOn");
+const PNTCHAR* Proxy::RmiName_Send_Req_Login =_PNT("Send_Req_Login");
 #else
-const PNTCHAR* Proxy::RmiName_OnLogOn =_PNT("");
+const PNTCHAR* Proxy::RmiName_Send_Req_Login =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_Chat =_PNT("Chat");
+const PNTCHAR* Proxy::RmiName_Send_Req_Chat =_PNT("Send_Req_Chat");
 #else
-const PNTCHAR* Proxy::RmiName_Chat =_PNT("");
+const PNTCHAR* Proxy::RmiName_Send_Req_Chat =_PNT("");
 #endif
-const PNTCHAR* Proxy::RmiName_First = RmiName_OnLogOn;
+const PNTCHAR* Proxy::RmiName_First = RmiName_Send_Req_Login;
 
 }
 

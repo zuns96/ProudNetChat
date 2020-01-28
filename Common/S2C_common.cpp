@@ -9,11 +9,11 @@ namespace S2C {
 
 	::Proud::RmiID g_RmiIDList[] = {
                
-		Rmi_LoginSuccess,
+		Rmi_Recv_Rpy_Login,
                
-		Rmi_ShowChat,
+		Rmi_Recv_Rpy_Chat,
                
-		Rmi_SystemChat,
+		Rmi_Recv_Rpy_System_Chat,
 	};
 
 	int g_RmiIDListCount = 3;

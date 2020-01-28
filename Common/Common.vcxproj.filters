@@ -18,12 +18,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vars.h">
+    <ClInclude Include="Packets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vars.cpp">
+    <ClCompile Include="Packets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

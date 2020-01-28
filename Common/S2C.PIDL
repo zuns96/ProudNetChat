@@ -1,7 +1,7 @@
 [access=public]
 global S2C 4000 // Fill your namespace and start ID number here.
 {
-	LoginSuccess([in] Proud::String id);
-	ShowChat([in] Proud::String txt, [in] int sendorID);
-	SystemChat([in] Proud::String txt);
+	Recv_Rpy_Login([in] Rpy_Login rpy);
+	Recv_Rpy_Chat([in] Rpy_Chat rpy);
+	Recv_Rpy_System_Chat([in] Rpy_System_Chat rpy);
 }

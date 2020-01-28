@@ -43,7 +43,7 @@ namespace S2C {
 					
 		switch((int)__rmiID) // case is to prevent from clang compile error
 		{
-			case Rmi_LoginSuccess:
+			case Rmi_Recv_Rpy_Login:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -61,29 +61,29 @@ namespace S2C {
 			            return true;
 			        }
 			
-					Proud::String id; __msg >> id;
-					m_core->PostCheckReadMessage(__msg,RmiName_LoginSuccess);
+					Rpy_Login rpy; __msg >> rpy;
+					m_core->PostCheckReadMessage(__msg,RmiName_Recv_Rpy_Login);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,id);	
+						::Proud::AppendTextOut(parameterString,rpy);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_LoginSuccess, 
-							RmiName_LoginSuccess,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_Login, 
+							RmiName_Recv_Rpy_Login,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_LoginSuccess, 
-							RmiName_LoginSuccess, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_Login, 
+							RmiName_Recv_Rpy_Login, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_LoginSuccess, 
-							RmiName_LoginSuccess, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_Login, 
+							RmiName_Recv_Rpy_Login, _PNT(""));
 			#endif
 					}
 						
@@ -91,8 +91,8 @@ namespace S2C {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_LoginSuccess;
-						summary.m_rmiName = RmiName_LoginSuccess;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Recv_Rpy_Login;
+						summary.m_rmiName = RmiName_Recv_Rpy_Login;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -101,19 +101,19 @@ namespace S2C {
 					}
 						
 					// Call this method.
-					bool __ret = LoginSuccess (remote,ctx , id );
+					bool __ret = Recv_Rpy_Login (remote,ctx , rpy );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_LoginSuccess);
+						m_core->ShowNotImplementedRmiWarning(RmiName_Recv_Rpy_Login);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_LoginSuccess;
-						summary.m_rmiName = RmiName_LoginSuccess;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Recv_Rpy_Login;
+						summary.m_rmiName = RmiName_Recv_Rpy_Login;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -125,7 +125,7 @@ namespace S2C {
 					}
 				}
 				break;
-			case Rmi_ShowChat:
+			case Rmi_Recv_Rpy_Chat:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -143,33 +143,29 @@ namespace S2C {
 			            return true;
 			        }
 			
-					Proud::String txt; __msg >> txt;
-					int sendorID; __msg >> sendorID;
-					m_core->PostCheckReadMessage(__msg,RmiName_ShowChat);
+					Rpy_Chat rpy; __msg >> rpy;
+					m_core->PostCheckReadMessage(__msg,RmiName_Recv_Rpy_Chat);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,txt);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,sendorID);	
+						::Proud::AppendTextOut(parameterString,rpy);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_ShowChat, 
-							RmiName_ShowChat,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_Chat, 
+							RmiName_Recv_Rpy_Chat,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_ShowChat, 
-							RmiName_ShowChat, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_Chat, 
+							RmiName_Recv_Rpy_Chat, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_ShowChat, 
-							RmiName_ShowChat, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_Chat, 
+							RmiName_Recv_Rpy_Chat, _PNT(""));
 			#endif
 					}
 						
@@ -177,8 +173,8 @@ namespace S2C {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_ShowChat;
-						summary.m_rmiName = RmiName_ShowChat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Recv_Rpy_Chat;
+						summary.m_rmiName = RmiName_Recv_Rpy_Chat;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -187,19 +183,19 @@ namespace S2C {
 					}
 						
 					// Call this method.
-					bool __ret = ShowChat (remote,ctx , txt, sendorID );
+					bool __ret = Recv_Rpy_Chat (remote,ctx , rpy );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_ShowChat);
+						m_core->ShowNotImplementedRmiWarning(RmiName_Recv_Rpy_Chat);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_ShowChat;
-						summary.m_rmiName = RmiName_ShowChat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Recv_Rpy_Chat;
+						summary.m_rmiName = RmiName_Recv_Rpy_Chat;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -211,7 +207,7 @@ namespace S2C {
 					}
 				}
 				break;
-			case Rmi_SystemChat:
+			case Rmi_Recv_Rpy_System_Chat:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -229,29 +225,29 @@ namespace S2C {
 			            return true;
 			        }
 			
-					Proud::String txt; __msg >> txt;
-					m_core->PostCheckReadMessage(__msg,RmiName_SystemChat);
+					Rpy_System_Chat rpy; __msg >> rpy;
+					m_core->PostCheckReadMessage(__msg,RmiName_Recv_Rpy_System_Chat);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,txt);	
+						::Proud::AppendTextOut(parameterString,rpy);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_SystemChat, 
-							RmiName_SystemChat,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat, 
+							RmiName_Recv_Rpy_System_Chat,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_SystemChat, 
-							RmiName_SystemChat, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat, 
+							RmiName_Recv_Rpy_System_Chat, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_SystemChat, 
-							RmiName_SystemChat, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat, 
+							RmiName_Recv_Rpy_System_Chat, _PNT(""));
 			#endif
 					}
 						
@@ -259,8 +255,8 @@ namespace S2C {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_SystemChat;
-						summary.m_rmiName = RmiName_SystemChat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat;
+						summary.m_rmiName = RmiName_Recv_Rpy_System_Chat;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -269,19 +265,19 @@ namespace S2C {
 					}
 						
 					// Call this method.
-					bool __ret = SystemChat (remote,ctx , txt );
+					bool __ret = Recv_Rpy_System_Chat (remote,ctx , rpy );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_SystemChat);
+						m_core->ShowNotImplementedRmiWarning(RmiName_Recv_Rpy_System_Chat);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_SystemChat;
-						summary.m_rmiName = RmiName_SystemChat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat;
+						summary.m_rmiName = RmiName_Recv_Rpy_System_Chat;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -304,21 +300,21 @@ __fail:
 		}
 	}
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_LoginSuccess =_PNT("LoginSuccess");
+	const PNTCHAR* Stub::RmiName_Recv_Rpy_Login =_PNT("Recv_Rpy_Login");
 	#else
-	const PNTCHAR* Stub::RmiName_LoginSuccess =_PNT("");
+	const PNTCHAR* Stub::RmiName_Recv_Rpy_Login =_PNT("");
 	#endif
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_ShowChat =_PNT("ShowChat");
+	const PNTCHAR* Stub::RmiName_Recv_Rpy_Chat =_PNT("Recv_Rpy_Chat");
 	#else
-	const PNTCHAR* Stub::RmiName_ShowChat =_PNT("");
+	const PNTCHAR* Stub::RmiName_Recv_Rpy_Chat =_PNT("");
 	#endif
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_SystemChat =_PNT("SystemChat");
+	const PNTCHAR* Stub::RmiName_Recv_Rpy_System_Chat =_PNT("Recv_Rpy_System_Chat");
 	#else
-	const PNTCHAR* Stub::RmiName_SystemChat =_PNT("");
+	const PNTCHAR* Stub::RmiName_Recv_Rpy_System_Chat =_PNT("");
 	#endif
-	const PNTCHAR* Stub::RmiName_First = RmiName_LoginSuccess;
+	const PNTCHAR* Stub::RmiName_First = RmiName_Recv_Rpy_Login;
 
 }
 

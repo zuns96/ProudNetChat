@@ -21,40 +21,40 @@ namespace S2C {
 	{
 	public:
                
-		virtual bool LoginSuccess ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & )		{ 
+		virtual bool Recv_Rpy_Login ( ::Proud::HostID, ::Proud::RmiContext& , const Rpy_Login & )		{ 
 			return false;
 		} 
 
-#define DECRMI_S2C_LoginSuccess bool LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id) PN_OVERRIDE
+#define DECRMI_S2C_Recv_Rpy_Login bool Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy) PN_OVERRIDE
 
-#define DEFRMI_S2C_LoginSuccess(DerivedClass) bool DerivedClass::LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id)
-#define CALL_S2C_LoginSuccess LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id)
-#define PARAM_S2C_LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id)
+#define DEFRMI_S2C_Recv_Rpy_Login(DerivedClass) bool DerivedClass::Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy)
+#define CALL_S2C_Recv_Rpy_Login Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy)
+#define PARAM_S2C_Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy)
                
-		virtual bool ShowChat ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & , const int & )		{ 
+		virtual bool Recv_Rpy_Chat ( ::Proud::HostID, ::Proud::RmiContext& , const Rpy_Chat & )		{ 
 			return false;
 		} 
 
-#define DECRMI_S2C_ShowChat bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID) PN_OVERRIDE
+#define DECRMI_S2C_Recv_Rpy_Chat bool Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy) PN_OVERRIDE
 
-#define DEFRMI_S2C_ShowChat(DerivedClass) bool DerivedClass::ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID)
-#define CALL_S2C_ShowChat ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID)
-#define PARAM_S2C_ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID)
+#define DEFRMI_S2C_Recv_Rpy_Chat(DerivedClass) bool DerivedClass::Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy)
+#define CALL_S2C_Recv_Rpy_Chat Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy)
+#define PARAM_S2C_Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy)
                
-		virtual bool SystemChat ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & )		{ 
+		virtual bool Recv_Rpy_System_Chat ( ::Proud::HostID, ::Proud::RmiContext& , const Rpy_System_Chat & )		{ 
 			return false;
 		} 
 
-#define DECRMI_S2C_SystemChat bool SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_OVERRIDE
+#define DECRMI_S2C_Recv_Rpy_System_Chat bool Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy) PN_OVERRIDE
 
-#define DEFRMI_S2C_SystemChat(DerivedClass) bool DerivedClass::SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
-#define CALL_S2C_SystemChat SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
-#define PARAM_S2C_SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)
+#define DEFRMI_S2C_Recv_Rpy_System_Chat(DerivedClass) bool DerivedClass::Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy)
+#define CALL_S2C_Recv_Rpy_System_Chat Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy)
+#define PARAM_S2C_Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy)
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
-		static const PNTCHAR* RmiName_LoginSuccess;
-		static const PNTCHAR* RmiName_ShowChat;
-		static const PNTCHAR* RmiName_SystemChat;
+		static const PNTCHAR* RmiName_Recv_Rpy_Login;
+		static const PNTCHAR* RmiName_Recv_Rpy_Chat;
+		static const PNTCHAR* RmiName_Recv_Rpy_System_Chat;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
 		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
@@ -66,30 +66,30 @@ namespace S2C {
 	{
 	public:
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & ) > LoginSuccess_Function;
-		virtual bool LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Rpy_Login & ) > Recv_Rpy_Login_Function;
+		virtual bool Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy) 
 		{ 
-			if (LoginSuccess_Function==nullptr) 
+			if (Recv_Rpy_Login_Function==nullptr) 
 				return true; 
-			return LoginSuccess_Function(remote,rmiContext, id); 
+			return Recv_Rpy_Login_Function(remote,rmiContext, rpy); 
 		}
 
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & , const int & ) > ShowChat_Function;
-		virtual bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Rpy_Chat & ) > Recv_Rpy_Chat_Function;
+		virtual bool Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy) 
 		{ 
-			if (ShowChat_Function==nullptr) 
+			if (Recv_Rpy_Chat_Function==nullptr) 
 				return true; 
-			return ShowChat_Function(remote,rmiContext, txt, sendorID); 
+			return Recv_Rpy_Chat_Function(remote,rmiContext, rpy); 
 		}
 
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Proud::String & ) > SystemChat_Function;
-		virtual bool SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const Rpy_System_Chat & ) > Recv_Rpy_System_Chat_Function;
+		virtual bool Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy) 
 		{ 
-			if (SystemChat_Function==nullptr) 
+			if (Recv_Rpy_System_Chat_Function==nullptr) 
 				return true; 
-			return SystemChat_Function(remote,rmiContext, txt); 
+			return Recv_Rpy_System_Chat_Function(remote,rmiContext, rpy); 
 		}
 
 	};

@@ -17,15 +17,15 @@ namespace S2C {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id) PN_SEALED; 
-	virtual bool LoginSuccess ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id)   PN_SEALED;  
-	virtual bool ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID) PN_SEALED; 
-	virtual bool ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt, const int & sendorID)   PN_SEALED;  
-	virtual bool SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_SEALED; 
-	virtual bool SystemChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)   PN_SEALED;  
-static const PNTCHAR* RmiName_LoginSuccess;
-static const PNTCHAR* RmiName_ShowChat;
-static const PNTCHAR* RmiName_SystemChat;
+	virtual bool Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy) PN_SEALED; 
+	virtual bool Recv_Rpy_Login ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Rpy_Login & rpy)   PN_SEALED;  
+	virtual bool Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy) PN_SEALED; 
+	virtual bool Recv_Rpy_Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Rpy_Chat & rpy)   PN_SEALED;  
+	virtual bool Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy) PN_SEALED; 
+	virtual bool Recv_Rpy_System_Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Rpy_System_Chat & rpy)   PN_SEALED;  
+static const PNTCHAR* RmiName_Recv_Rpy_Login;
+static const PNTCHAR* RmiName_Recv_Rpy_Chat;
+static const PNTCHAR* RmiName_Recv_Rpy_System_Chat;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

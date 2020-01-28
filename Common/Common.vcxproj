@@ -169,10 +169,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Vars.h" />
+    <ClInclude Include="Packets.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vars.cpp" />
+    <ClCompile Include="Packets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C2S.PIDL">

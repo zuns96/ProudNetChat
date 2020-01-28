@@ -43,7 +43,7 @@ namespace C2S {
 					
 		switch((int)__rmiID) // case is to prevent from clang compile error
 		{
-			case Rmi_OnLogOn:
+			case Rmi_Send_Req_Login:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -61,33 +61,29 @@ namespace C2S {
 			            return true;
 			        }
 			
-					Proud::String id; __msg >> id;
-					Proud::String password; __msg >> password;
-					m_core->PostCheckReadMessage(__msg,RmiName_OnLogOn);
+					Req_Login req; __msg >> req;
+					m_core->PostCheckReadMessage(__msg,RmiName_Send_Req_Login);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,id);	
-										
-						parameterString += _PNT(", ");
-						::Proud::AppendTextOut(parameterString,password);	
+						::Proud::AppendTextOut(parameterString,req);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_OnLogOn, 
-							RmiName_OnLogOn,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Send_Req_Login, 
+							RmiName_Send_Req_Login,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_OnLogOn, 
-							RmiName_OnLogOn, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Send_Req_Login, 
+							RmiName_Send_Req_Login, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_OnLogOn, 
-							RmiName_OnLogOn, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Send_Req_Login, 
+							RmiName_Send_Req_Login, _PNT(""));
 			#endif
 					}
 						
@@ -95,8 +91,8 @@ namespace C2S {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_OnLogOn;
-						summary.m_rmiName = RmiName_OnLogOn;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Send_Req_Login;
+						summary.m_rmiName = RmiName_Send_Req_Login;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -105,19 +101,19 @@ namespace C2S {
 					}
 						
 					// Call this method.
-					bool __ret = OnLogOn (remote,ctx , id, password );
+					bool __ret = Send_Req_Login (remote,ctx , req );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_OnLogOn);
+						m_core->ShowNotImplementedRmiWarning(RmiName_Send_Req_Login);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_OnLogOn;
-						summary.m_rmiName = RmiName_OnLogOn;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Send_Req_Login;
+						summary.m_rmiName = RmiName_Send_Req_Login;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -129,7 +125,7 @@ namespace C2S {
 					}
 				}
 				break;
-			case Rmi_Chat:
+			case Rmi_Send_Req_Chat:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -147,29 +143,29 @@ namespace C2S {
 			            return true;
 			        }
 			
-					Proud::String txt; __msg >> txt;
-					m_core->PostCheckReadMessage(__msg,RmiName_Chat);
+					Req_Chat req; __msg >> req;
+					m_core->PostCheckReadMessage(__msg,RmiName_Send_Req_Chat);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,txt);	
+						::Proud::AppendTextOut(parameterString,req);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Chat, 
-							RmiName_Chat,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Send_Req_Chat, 
+							RmiName_Send_Req_Chat,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Chat, 
-							RmiName_Chat, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Send_Req_Chat, 
+							RmiName_Send_Req_Chat, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Chat, 
-							RmiName_Chat, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Send_Req_Chat, 
+							RmiName_Send_Req_Chat, _PNT(""));
 			#endif
 					}
 						
@@ -177,8 +173,8 @@ namespace C2S {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_Chat;
-						summary.m_rmiName = RmiName_Chat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Send_Req_Chat;
+						summary.m_rmiName = RmiName_Send_Req_Chat;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -187,19 +183,19 @@ namespace C2S {
 					}
 						
 					// Call this method.
-					bool __ret = Chat (remote,ctx , txt );
+					bool __ret = Send_Req_Chat (remote,ctx , req );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_Chat);
+						m_core->ShowNotImplementedRmiWarning(RmiName_Send_Req_Chat);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_Chat;
-						summary.m_rmiName = RmiName_Chat;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Send_Req_Chat;
+						summary.m_rmiName = RmiName_Send_Req_Chat;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -222,16 +218,16 @@ __fail:
 		}
 	}
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_OnLogOn =_PNT("OnLogOn");
+	const PNTCHAR* Stub::RmiName_Send_Req_Login =_PNT("Send_Req_Login");
 	#else
-	const PNTCHAR* Stub::RmiName_OnLogOn =_PNT("");
+	const PNTCHAR* Stub::RmiName_Send_Req_Login =_PNT("");
 	#endif
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_Chat =_PNT("Chat");
+	const PNTCHAR* Stub::RmiName_Send_Req_Chat =_PNT("Send_Req_Chat");
 	#else
-	const PNTCHAR* Stub::RmiName_Chat =_PNT("");
+	const PNTCHAR* Stub::RmiName_Send_Req_Chat =_PNT("");
 	#endif
-	const PNTCHAR* Stub::RmiName_First = RmiName_OnLogOn;
+	const PNTCHAR* Stub::RmiName_First = RmiName_Send_Req_Login;
 
 }
 

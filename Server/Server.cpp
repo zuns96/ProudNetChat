@@ -5,27 +5,22 @@
 using namespace std;
 using namespace Proud;
 
-LRESULT CALLBACK ChatWndProc(HWND, UINT, WPARAM, LPARAM);
-void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id);
-HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id);
-void Draw(HWND hWnd);
-void Quit(HWND hWnd);
-
-HINSTANCE g_hInst;
-HWND hUserList;
-HWND hLogList;
-
-LPCTSTR lpszClass = TEXT("chat_server");
-
-int iChatClientWidth = 400;
-int iChatClientHeight = 600;
-
 CNetServer * srv = NULL;
-CFastArray<SUser> userList;
-
-C2SStub g_C2SStub;
-S2C::Proxy g_S2CProxy;
 HostID g_groupHostID = HostID_None;
+
+class SUser : public User
+{
+public:
+	Proud::HostID m_hostID;
+
+	void SetUserData(const String &name, HostID hostID)
+	{
+		m_name = name;
+		m_hostID = hostID;
+	}
+};
+
+CFastArray<SUser> userList;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -59,8 +54,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 				wsprintf(buf, TEXT("%s¥‘¿Ã ≈¿Â «œºÃΩ¿¥œ¥Ÿ."), userList[i].m_name);
 				for (int j = 0; j < userCnt; ++j)
 				{
-					if(i != j)
-						g_S2CProxy.SystemChat(userList[j].m_hostID, RmiContext::ReliableSend, buf);
+					if (i != j)
+					{
+						Rpy_System_Chat rpy;
+						rpy.msg = buf;
+						g_S2CProxy.Recv_Rpy_System_Chat(userList[j].m_hostID, RmiContext::ReliableSend, rpy);
+					}
 				}
 				userList.RemoveAt(i);
 				break;
@@ -150,7 +149,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
-int curSelectUserIdx = -1;
 LRESULT CALLBACK ChatWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMessage)
@@ -168,7 +166,7 @@ LRESULT CALLBACK ChatWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 			Quit(hWnd);
 			break;
 		case WINDOW_ID_KICKBTN:
-			if (curSelectUserIdx < userList.Count > 0)
+			if (curSelectUserIdx >=0 && curSelectUserIdx < userList.Count)
 			{
 				TCHAR buf[LOG_BUF_SIZE];
 				SUser user = userList[curSelectUserIdx];
@@ -235,33 +233,40 @@ void Draw(HWND hWnd)
 	EndPaint(hWnd, &ps);
 }
 
-DEFRMI_C2S_OnLogOn(C2SStub)
+DEFRMI_C2S_Send_Req_Login(C2SStub)
 {
 	TCHAR buf[LOG_BUF_SIZE];
 	SUser sUser;
-	sUser.SetUserData(id, remote);
-	wsprintf(buf, TEXT("[LogOn!!] hostID : %d, id : %s"), sUser.m_hostID, id);
+	sUser.SetUserData(req.id, remote);
+	wsprintf(buf, TEXT("[LogOn!!] hostID : %d, id : %s"), sUser.m_hostID, sUser.m_name);
 	SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	int cnt = SendMessage(hLogList, LB_GETCOUNT, (WPARAM)NULL, (LPARAM)NULL);
 	SendMessage(hLogList, LB_SETTOPINDEX, (WPARAM)(cnt - 1), (LPARAM)0);
 
-	g_S2CProxy.LoginSuccess(sUser.m_hostID, RmiContext::ReliableSend, id);
+	Rpy_Login rpy;
+	rpy.id = req.id;
+
+	g_S2CProxy.Recv_Rpy_Login(sUser.m_hostID, RmiContext::ReliableSend, rpy);
 	int userCnt = userList.Count;
 	for (int i = 0; i < userCnt; ++i)
 	{
-		wsprintf(buf, TEXT("%s¥‘¿Ã ¿‘¿Â «œºÃΩ¿¥œ¥Ÿ."), id);
-		g_S2CProxy.SystemChat(userList[i].m_hostID, RmiContext::ReliableSend, buf);
+		wsprintf(buf, TEXT("%s¥‘¿Ã ¿‘¿Â «œºÃΩ¿¥œ¥Ÿ."), sUser.m_name);
+		
+		Rpy_System_Chat rpy;
+		rpy.msg = buf;
+
+		g_S2CProxy.Recv_Rpy_System_Chat(userList[i].m_hostID, RmiContext::ReliableSend, rpy);
 	}
 	userList.Add(sUser);
-	wsprintf(buf, TEXT("[%d] : %s"), sUser.m_hostID, id);
+	wsprintf(buf, TEXT("[%d] : %s"), sUser.m_hostID, sUser.m_name);
 	SendMessage(hUserList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	return true;
 }
 
-DEFRMI_C2S_Chat(C2SStub)
+DEFRMI_C2S_Send_Req_Chat(C2SStub)
 {
 	TCHAR buf[LOG_BUF_SIZE];
-	wsprintf(buf, TEXT("[Chat]{%d}%s"), remote, txt);
+	wsprintf(buf, TEXT("[Chat]{%d}%s"), remote, req.msg);
 	SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
 	int cnt = SendMessage(hLogList, LB_GETCOUNT, (WPARAM)NULL, (LPARAM)NULL);
 	SendMessage(hLogList, LB_SETTOPINDEX, (WPARAM)(cnt - 1), (LPARAM)0);
@@ -269,13 +274,10 @@ DEFRMI_C2S_Chat(C2SStub)
 	int userCnt = userList.Count;
 	for (int i = 0; i < userCnt; ++i)
 	{
-		g_S2CProxy.ShowChat(userList[i].m_hostID, RmiContext::ReliableSend, txt, remote);
+		Rpy_Chat rpy;
+		rpy.hostID = remote;
+		rpy.msg = req.msg;
+		g_S2CProxy.Recv_Rpy_Chat(userList[i].m_hostID, RmiContext::ReliableSend, rpy);
 	}
 	return true;
-}
-
-void SUser::SetUserData(const String &name, HostID hostID)
-{
-	m_name = name;
-	m_hostID = hostID;
 }

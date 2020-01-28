@@ -17,12 +17,12 @@ namespace C2S {
 	class Proxy : public ::Proud::IRmiProxy
 	{
 	public:
-	virtual bool OnLogOn ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id, const Proud::String & password) PN_SEALED; 
-	virtual bool OnLogOn ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id, const Proud::String & password)   PN_SEALED;  
-	virtual bool Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt) PN_SEALED; 
-	virtual bool Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)   PN_SEALED;  
-static const PNTCHAR* RmiName_OnLogOn;
-static const PNTCHAR* RmiName_Chat;
+	virtual bool Send_Req_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Login & req) PN_SEALED; 
+	virtual bool Send_Req_Login ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Req_Login & req)   PN_SEALED;  
+	virtual bool Send_Req_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Req_Chat & req) PN_SEALED; 
+	virtual bool Send_Req_Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Req_Chat & req)   PN_SEALED;  
+static const PNTCHAR* RmiName_Send_Req_Login;
+static const PNTCHAR* RmiName_Send_Req_Chat;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

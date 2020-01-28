@@ -5,45 +5,24 @@ using namespace std;
 using namespace Proud;
 
 CriticalSection g_critSec;
-
-HWND hIDEdit;
-HWND hPWEdit;
-HWND hUserList;
-HWND hLogList;
-HWND hTextEdit;
-
-User user;
-bool isLogin = false;
-C2S::Proxy g_C2SProxy;
-
-bool isConnected = false;
-volatile bool keepWorkerThread = true;
 CNetClient * netClient;
 
-class S2CStub : public S2C::Stub
-{
-public:
-	DECRMI_S2C_LoginSuccess;
-	DECRMI_S2C_ShowChat;
-	DECRMI_S2C_SystemChat;
-};
-
-DEFRMI_S2C_LoginSuccess(S2CStub)
+DEFRMI_S2C_Recv_Rpy_Login(S2CStub)
 {
 	CriticalSectionLock lock(g_critSec, true);
 	isLogin = true;
-	user.m_name = id;
+	user.m_name = rpy.id;
 	return true;
 }
 
-DEFRMI_S2C_ShowChat(S2CStub)
+DEFRMI_S2C_Recv_Rpy_Chat(S2CStub)
 {
 	CriticalSectionLock lock(g_critSec, true);
 
 	TCHAR buf[512];
-	wsprintf(buf, TEXT("%s"), StringT2W(txt).GetString());
+	wsprintf(buf, TEXT("%s"), StringT2W(rpy.msg).GetString());
 	
-	if (netClient->GetLocalHostID() == sendorID)
+	if (netClient->GetLocalHostID() == rpy.hostID)
 		SetWindowText(hTextEdit, TEXT(""));
 
 	SendMessage(hUserList, LB_ADDSTRING, (WPARAM)0, (LPARAM)buf);
@@ -53,37 +32,15 @@ DEFRMI_S2C_ShowChat(S2CStub)
 	return true;
 }
 
-DEFRMI_S2C_SystemChat(S2CStub)
+DEFRMI_S2C_Recv_Rpy_System_Chat(S2CStub)
 {
 	CriticalSectionLock lock(g_critSec, true);
-	SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)StringT2W(txt).GetString());
+	SendMessage(hLogList, LB_ADDSTRING, (WPARAM)0, (LPARAM)StringT2W(rpy.msg).GetString());
 	int cnt = SendMessage(hLogList, LB_GETCOUNT, (WPARAM)NULL, (LPARAM)NULL);
 	SendMessage(hLogList, LB_SETTOPINDEX, (WPARAM)(cnt - 1), (LPARAM)0);
 
 	return true;
 }
-
-const char * ip = "127.0.0.1";
-
-S2CStub g_S2CStub;
-
-LRESULT CALLBACK ChatWndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK LoginWndProc(HWND, UINT, WPARAM, LPARAM);
-void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id);
-HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id);
-HWND CreateTextEdit(int x, int y, int width, int height, HWND hWnd, int id);
-void Draw(HWND hWnd);
-void Quit(HWND hWnd);
-
-HINSTANCE g_hInst;
-LPCTSTR lpszLoginClass = TEXT("Login");
-LPCTSTR lpszClass = TEXT("chat_client");
-
-int iLoginWidth = 400;
-int iLoginHeight = 200;
-
-int iChatClientWidth = 500;
-int iChatClientHeight = 600;
 
 Proud::Thread workerThread([&]
 {
@@ -93,9 +50,6 @@ Proud::Thread workerThread([&]
 		netClient->FrameMove();
 	}
 });
-
-WNDCLASS WndLoginClass;
-WNDCLASS WndChatClass;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -112,7 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		{
 			isConnected = true;
 			TCHAR info[256];
-			wsprintf(info, TEXT("Login(%s:%d)"), StringA2W(ip), g_ServerPort);
+			wsprintf(info, TEXT("Login(%s:%d)"), StringA2W(c_ip), g_ServerPort);
 			SetWindowText(hWnd, info);
 		}
 		else
@@ -175,14 +129,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	CNetConnectionParam cp;
 	cp.m_protocolVersion = g_Version;
-	cp.m_serverIP = StringA2T(ip);
+	cp.m_serverIP = StringA2T(c_ip);
 	cp.m_serverPort = g_ServerPort;
 
 	netClient->Connect(cp);
 
 	g_hInst = hInstance;
 
-	WndLoginClass.cbClsExtra = 0;
 	WndLoginClass.cbClsExtra = 0;
 	WndLoginClass.cbWndExtra = 0;
 	WndLoginClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -221,7 +174,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		RegisterClass(&WndChatClass);
 
 		TCHAR info[256];
-		wsprintf(info, TEXT("Chat(server : %s:%d, hostID : %d, id : %s)"), StringA2W(ip), g_ServerPort, netClient->GetLocalHostID(), user.m_name);
+		wsprintf(info, TEXT("Chat(server : %s:%d, hostID : %d, id : %s)"), StringA2W(c_ip), g_ServerPort, netClient->GetLocalHostID(), user.m_name);
 		hWnd = CreateWindow(lpszClass, info, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, iChatClientWidth, iChatClientHeight, NULL, (HMENU)NULL, hInstance, NULL);
 		ShowWindow(hWnd, nCmdShow);
 
@@ -245,8 +198,8 @@ LRESULT CALLBACK ChatWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 	case WM_CREATE:
 		hUserList = CreateListBox(10, 30, iChatClientWidth - 35, iChatClientHeight - 390, hWnd, WINDOW_ID_CHATLIST);
 		hLogList = CreateListBox(10, 270, iChatClientWidth - 35, iChatClientHeight - 390, hWnd, WINDOW_ID_LOGLIST);
-		CreatePushButton(TEXT("´Ý±â"), 10, iChatClientHeight - 85, 100, 25, hWnd, WINDOW_ID_EXITBTN);
-		CreatePushButton(TEXT("º¸³»±â"), iChatClientWidth - 125, iChatClientHeight - 110, 100, 25, hWnd, WINDOW_ID_KICKBTN);
+		CreatePushButton(TEXT("´Ý±â"), 10, iChatClientHeight - 85, 100, 25, hWnd, WINDOW_ID_EXITBTN, false);
+		CreatePushButton(TEXT("º¸³»±â"), iChatClientWidth - 125, iChatClientHeight - 110, 100, 25, hWnd, WINDOW_ID_SENDBTN, true);
 		hTextEdit = CreateTextEdit(10, iChatClientHeight - 110, 365, 20, hWnd, WINDOW_ID_TEXTEDIT);
 		return 0;
 	case WM_COMMAND:
@@ -255,14 +208,29 @@ LRESULT CALLBACK ChatWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 		case WINDOW_ID_EXITBTN:
 			Quit(hWnd);
 			break;
-		case WINDOW_ID_KICKBTN:
+		case WINDOW_ID_SENDBTN:
 			TCHAR input[256];
 			GetWindowText(hTextEdit, input, 256);
 			if (lstrlenW(input) > 0)
 			{
 				TCHAR text[512];
 				wsprintf(text, TEXT("%s : %s"), user.m_name, input);
-				g_C2SProxy.Chat(HostID_Server, RmiContext::ReliableSend, StringW2T(text).GetString());
+				
+				Req_Chat req;
+				req.msg = StringW2T(text).GetString();
+
+				g_C2SProxy.Send_Req_Chat(HostID_Server, RmiContext::ReliableSend, req);
+			}
+			break;
+		case WINDOW_ID_TEXTEDIT:
+			switch (HIWORD(wParam))
+			{
+			case EN_UPDATE:
+				break;
+			case EN_CHANGE:
+				TCHAR input[256];
+				GetWindowText(hTextEdit, input, 256);
+				break;
 			}
 			break;
 		default:
@@ -287,8 +255,8 @@ LRESULT CALLBACK LoginWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		CreatePushButton(TEXT("´Ý±â"), 10, iLoginHeight - 85, 100, 25, hWnd, WINDOW_ID_EXITBTN);
-		CreatePushButton(TEXT("·Î±×ÀÎ"), iLoginWidth - 125, iLoginHeight - 85, 100, 25, hWnd, WINDOW_ID_LOGINBTN);
+		CreatePushButton(TEXT("´Ý±â"), 10, iLoginHeight - 85, 100, 25, hWnd, WINDOW_ID_EXITBTN, false);
+		CreatePushButton(TEXT("·Î±×ÀÎ"), iLoginWidth - 125, iLoginHeight - 85, 100, 25, hWnd, WINDOW_ID_LOGINBTN, true);
 		hIDEdit = CreateTextEdit(10, 30, 200, 20, hWnd, WINDOW_ID_TEXTEDIT);
 		hPWEdit = CreateTextEdit(10, 70, 200, 20, hWnd, WINDOW_ID_TEXTEDIT);
 		return 0;
@@ -313,7 +281,11 @@ LRESULT CALLBACK LoginWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 			}
 			else
 			{
-				g_C2SProxy.OnLogOn(HostID_Server, RmiContext::ReliableSend, StringW2T(id).GetString(), StringW2T(pw).GetString());
+				Req_Login req;
+				req.id = StringW2T(id).GetString();
+				req.password = StringW2T(pw).GetString();
+
+				g_C2SProxy.Send_Req_Login(HostID_Server, RmiContext::ReliableSend, req);
 			}
 			break;
 		default:
@@ -347,9 +319,11 @@ LRESULT CALLBACK LoginWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lP
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
 
-void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id)
+void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id, bool isDefaultPush)
 {
-	CreateWindow(TEXT("button"), text, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
+	int style = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
+	if (isDefaultPush) style |= BS_DEFPUSHBUTTON;
+	CreateWindow(TEXT("button"), text, style, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
 }
 
 HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id)
@@ -359,7 +333,7 @@ HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id)
 
 HWND CreateTextEdit(int x, int y, int width, int height, HWND hWnd, int id)
 {
-	return CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
+	return CreateWindow(TEXT("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_WANTRETURN, x, y, width, height, hWnd, (HMENU)id, g_hInst, NULL);
 }
 
 void Draw(HWND hWnd)
@@ -377,8 +351,10 @@ void Quit(HWND hWnd)
 {
 	keepWorkerThread = false;
 	workerThread.Join();
+	
 	netClient->Disconnect();
 	delete netClient;
 	netClient = NULL;
+
 	DestroyWindow(hWnd);
 }

@@ -1,6 +1,6 @@
 [access=public]
 global C2S 3000 // Fill your namespace and start ID number here.
 {
-	OnLogOn([in] Proud::String id, [in] Proud::String password);
-	Chat([in] Proud::String txt);
+	Send_Req_Login([in] Req_Login req);
+	Send_Req_Chat([in] Req_Chat req);
 }

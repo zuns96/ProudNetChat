@@ -13,107 +13,105 @@ namespace S2C {
 
 
         
-	bool Proxy::LoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & id)	{
+	bool Proxy::Recv_Rpy_Login ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Login & rpy)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_LoginSuccess;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Recv_Rpy_Login;
 __msg.Write(__msgid); 
 	
-__msg << id;
+__msg << rpy;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_LoginSuccess, (::Proud::RmiID)Rmi_LoginSuccess);
+			RmiName_Recv_Rpy_Login, (::Proud::RmiID)Rmi_Recv_Rpy_Login);
 	}
 
-	bool Proxy::LoginSuccess ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & id)  	{
+	bool Proxy::Recv_Rpy_Login ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Rpy_Login & rpy)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_LoginSuccess;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Recv_Rpy_Login;
 __msg.Write(__msgid); 
 	
-__msg << id;
+__msg << rpy;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_LoginSuccess, (::Proud::RmiID)Rmi_LoginSuccess);
+			RmiName_Recv_Rpy_Login, (::Proud::RmiID)Rmi_Recv_Rpy_Login);
 	}
         
-	bool Proxy::ShowChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt, const int & sendorID)	{
+	bool Proxy::Recv_Rpy_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_Chat & rpy)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_ShowChat;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Recv_Rpy_Chat;
 __msg.Write(__msgid); 
 	
-__msg << txt;
-__msg << sendorID;
+__msg << rpy;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_ShowChat, (::Proud::RmiID)Rmi_ShowChat);
+			RmiName_Recv_Rpy_Chat, (::Proud::RmiID)Rmi_Recv_Rpy_Chat);
 	}
 
-	bool Proxy::ShowChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt, const int & sendorID)  	{
+	bool Proxy::Recv_Rpy_Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Rpy_Chat & rpy)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_ShowChat;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Recv_Rpy_Chat;
 __msg.Write(__msgid); 
 	
-__msg << txt;
-__msg << sendorID;
+__msg << rpy;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_ShowChat, (::Proud::RmiID)Rmi_ShowChat);
+			RmiName_Recv_Rpy_Chat, (::Proud::RmiID)Rmi_Recv_Rpy_Chat);
 	}
         
-	bool Proxy::SystemChat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Proud::String & txt)	{
+	bool Proxy::Recv_Rpy_System_Chat ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const Rpy_System_Chat & rpy)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_SystemChat;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Recv_Rpy_System_Chat;
 __msg.Write(__msgid); 
 	
-__msg << txt;
+__msg << rpy;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_SystemChat, (::Proud::RmiID)Rmi_SystemChat);
+			RmiName_Recv_Rpy_System_Chat, (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat);
 	}
 
-	bool Proxy::SystemChat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Proud::String & txt)  	{
+	bool Proxy::Recv_Rpy_System_Chat ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const Rpy_System_Chat & rpy)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_SystemChat;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Recv_Rpy_System_Chat;
 __msg.Write(__msgid); 
 	
-__msg << txt;
+__msg << rpy;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_SystemChat, (::Proud::RmiID)Rmi_SystemChat);
+			RmiName_Recv_Rpy_System_Chat, (::Proud::RmiID)Rmi_Recv_Rpy_System_Chat);
 	}
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_LoginSuccess =_PNT("LoginSuccess");
+const PNTCHAR* Proxy::RmiName_Recv_Rpy_Login =_PNT("Recv_Rpy_Login");
 #else
-const PNTCHAR* Proxy::RmiName_LoginSuccess =_PNT("");
+const PNTCHAR* Proxy::RmiName_Recv_Rpy_Login =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("ShowChat");
+const PNTCHAR* Proxy::RmiName_Recv_Rpy_Chat =_PNT("Recv_Rpy_Chat");
 #else
-const PNTCHAR* Proxy::RmiName_ShowChat =_PNT("");
+const PNTCHAR* Proxy::RmiName_Recv_Rpy_Chat =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_SystemChat =_PNT("SystemChat");
+const PNTCHAR* Proxy::RmiName_Recv_Rpy_System_Chat =_PNT("Recv_Rpy_System_Chat");
 #else
-const PNTCHAR* Proxy::RmiName_SystemChat =_PNT("");
+const PNTCHAR* Proxy::RmiName_Recv_Rpy_System_Chat =_PNT("");
 #endif
-const PNTCHAR* Proxy::RmiName_First = RmiName_LoginSuccess;
+const PNTCHAR* Proxy::RmiName_First = RmiName_Recv_Rpy_Login;
 
 }
 

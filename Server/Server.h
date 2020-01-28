@@ -1,6 +1,6 @@
 #pragma once
 #include <ProudNetServer.h>
-#include "../Common/Vars.h"
+#include "../Common/Packets.h"
 
 #include "../Common/C2S_common.cpp"
 #include "../Common/S2C_common.cpp"
@@ -11,30 +11,31 @@
 #include "../Common/S2C_proxy.h"
 #include "../Common/S2C_proxy.cpp"
 
+
 class C2SStub : public C2S::Stub
 {
 public:
-	DECRMI_C2S_OnLogOn;
-	DECRMI_C2S_Chat;
+	DECRMI_C2S_Send_Req_Login;
+	DECRMI_C2S_Send_Req_Chat;
 };
 
-class SUser : public User
-{
-public :
-	Proud::HostID m_hostID;
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow);
+LRESULT CALLBACK ChatWndProc(HWND, UINT, WPARAM, LPARAM);
+void CreatePushButton(LPCTSTR text, int x, int y, int width, int height, HWND hWnd, int id);
+HWND CreateListBox(int x, int y, int width, int height, HWND hWnd, int id);
+void Draw(HWND hWnd);
+void Quit(HWND hWnd);
 
-	void SetUserData(const Proud::String &id, Proud::HostID hostID);
-};
+HINSTANCE g_hInst;
+HWND hUserList;
+HWND hLogList;
 
-enum WINDOW_ID : int
-{
-	EXIT_BUTTON = 0,
-	KICK_BUTTON = 1,
-	CHAT_LIST = 2,
-	LOG_LIST = 3,
-};
+LPCTSTR lpszClass = TEXT("chat_server");
 
-#define WINDOW_ID_EXITBTN WINDOW_ID::EXIT_BUTTON
-#define WINDOW_ID_KICKBTN WINDOW_ID::KICK_BUTTON
-#define WINDOW_ID_CHATLIST WINDOW_ID::CHAT_LIST
-#define WINDOW_ID_LOGLIST WINDOW_ID::LOG_LIST
+int iChatClientWidth = 400;
+int iChatClientHeight = 600;
+
+C2SStub g_C2SStub;
+S2C::Proxy g_S2CProxy;
+
+int curSelectUserIdx = -1;
